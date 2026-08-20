@@ -1,0 +1,2585 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "summary": "Login dengan email & password",
+        "description": "Login pakai kredensial Supabase Auth. Mengembalikan access_token untuk dipakai di endpoint cms/. Salin access_token, klik Authorize di atas, tempel di sana.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "access_token": "eyJhbGci...",
+                      "refresh_token": "v1.Mr...",
+                      "expires_in": 3600,
+                      "token_type": "bearer",
+                      "user": {
+                        "id": "uuid",
+                        "email": "admin@nawasena.id",
+                        "role": "admin"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Email atau password salah"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "summary": "Perbarui access_token",
+        "description": "Pakai refresh_token untuk dapat access_token baru (token lama berlaku 1 jam).",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "summary": "Profil user dari token",
+        "description": "Mengembalikan id, email, dan role dari access_token yang dikirim.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "id": "uuid",
+                      "email": "admin@nawasena.id",
+                      "role": "admin"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "summary": "Health check",
+        "description": "Endpoint ringan untuk monitoring/ping (UptimeRobot). Tidak query database.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/v1/public/news": {
+      "get": {
+        "operationId": "NewsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/news"
+        ]
+      }
+    },
+    "/v1/public/news/{slug}": {
+      "get": {
+        "operationId": "NewsController_detail",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/news"
+        ]
+      }
+    },
+    "/v1/cms/news": {
+      "get": {
+        "operationId": "NewsCmsController_listAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/news"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "NewsCmsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/news"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/news/{id}": {
+      "get": {
+        "operationId": "NewsCmsController_getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/news"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "NewsCmsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNewsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/news"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "NewsCmsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/news"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/news/{id}/cover": {
+      "post": {
+        "operationId": "NewsCmsController_uploadCover",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/news"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/news/{id}/publish": {
+      "patch": {
+        "operationId": "NewsCmsController_publish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/news"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/ingest/telemetry": {
+      "post": {
+        "operationId": "TelemetryController_ingest",
+        "summary": "Ingest data dari Bridge",
+        "description": "Endpoint tunggal untuk semua data IoT. Bridge kirim {deviceId,type,data}. Backend simpan raw + routing ke rover_operations/trap_events. Butuh header x-bridge-key.",
+        "parameters": [
+          {
+            "name": "x-bridge-key",
+            "in": "header",
+            "description": "Kunci rahasia Bridge",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "ingest"
+        ]
+      }
+    },
+    "/v1/public/rover/latest": {
+      "get": {
+        "operationId": "RoverController_latestAll",
+        "summary": "Posisi terkini semua rover",
+        "description": "Untuk tampil marker di maps. Polling tiap 3-5 detik.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/rover"
+        ]
+      }
+    },
+    "/v1/public/rover/{deviceId}/latest": {
+      "get": {
+        "operationId": "RoverController_latestOne",
+        "summary": "Posisi terkini satu rover",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/rover"
+        ]
+      }
+    },
+    "/v1/public/rover/{deviceId}/track": {
+      "get": {
+        "operationId": "RoverController_track",
+        "summary": "Jejak posisi rover",
+        "description": "Riwayat posisi untuk gambar rute (polyline) di maps.",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/rover"
+        ]
+      }
+    },
+    "/v1/public/traps": {
+      "get": {
+        "operationId": "TrapsController_list",
+        "summary": "Daftar trap + event terkini",
+        "description": "Untuk dashboard hama. Tiap trap beserta event terbarunya.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/traps"
+        ]
+      }
+    },
+    "/v1/public/traps/summary": {
+      "get": {
+        "operationId": "TrapsController_summary",
+        "summary": "Ringkasan deteksi hama",
+        "description": "Total event per jenis, deteksi hama hari ini, jumlah trap. Bisa filter ?deviceId=",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/traps"
+        ]
+      }
+    },
+    "/v1/public/traps/{deviceId}/latest": {
+      "get": {
+        "operationId": "TrapsController_latestOne",
+        "summary": "Event terkini satu trap",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/traps"
+        ]
+      }
+    },
+    "/v1/public/traps/{deviceId}/history": {
+      "get": {
+        "operationId": "TrapsController_history",
+        "summary": "Riwayat event trap",
+        "description": "Untuk grafik tren. Filter ?eventType=pest_detected dan ?limit=",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventType",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/traps"
+        ]
+      }
+    },
+    "/v1/public/schedule": {
+      "get": {
+        "operationId": "ScheduleController_list",
+        "summary": "Daftar jadwal tanam desa",
+        "description": "Filter ?padukuhan= dan ?status=planned|planted|harvested",
+        "parameters": [
+          {
+            "name": "padukuhan",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/schedule"
+        ]
+      }
+    },
+    "/v1/public/schedule/by-padukuhan": {
+      "get": {
+        "operationId": "ScheduleController_byPadukuhan",
+        "summary": "Jadwal dikelompokkan per padukuhan",
+        "description": "Untuk lihat tanam serentak per wilayah.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/schedule"
+        ]
+      }
+    },
+    "/v1/cms/schedule": {
+      "get": {
+        "operationId": "ScheduleCmsController_listAll",
+        "summary": "Semua jadwal tanam (admin)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "ScheduleCmsController_create",
+        "summary": "Tambah jadwal tanam",
+        "description": "Estimasi panen otomatis jika tidak diisi (default umur padi 115 hari).",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/schedule/upcoming-harvest": {
+      "get": {
+        "operationId": "ScheduleCmsController_upcoming",
+        "summary": "Jadwal mendekati panen",
+        "description": "Default 7 hari ke depan. ?days=",
+        "parameters": [
+          {
+            "name": "days",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/schedule/{id}": {
+      "get": {
+        "operationId": "ScheduleCmsController_getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "ScheduleCmsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ScheduleCmsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/public/harvest": {
+      "get": {
+        "operationId": "HarvestController_list",
+        "summary": "Rekap panen desa",
+        "description": "Daftar hasil panen. Filter ?padukuhan=",
+        "parameters": [
+          {
+            "name": "padukuhan",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/harvest"
+        ]
+      }
+    },
+    "/v1/public/harvest/stats": {
+      "get": {
+        "operationId": "HarvestController_stats",
+        "summary": "Statistik panen desa",
+        "description": "Rata-rata yield ton/ha, total produksi, rata-rata kerusakan hama, per padukuhan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/harvest"
+        ]
+      }
+    },
+    "/v1/cms/harvest": {
+      "get": {
+        "operationId": "HarvestCmsController_listAll",
+        "summary": "Semua data panen (admin)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/harvest"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "HarvestCmsController_create",
+        "summary": "Input data panen",
+        "description": "Yield ton/ha & estimasi total dihitung otomatis dari ubinan (faktor BPS 1.6). Jika scheduleId diisi, jadwal ditandai harvested.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHarvestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/harvest"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/harvest/{id}": {
+      "get": {
+        "operationId": "HarvestCmsController_getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/harvest"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "HarvestCmsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateHarvestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/harvest"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "HarvestCmsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/harvest"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/public/umkm": {
+      "get": {
+        "operationId": "UmkmController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/umkm"
+        ]
+      }
+    },
+    "/v1/public/umkm/{slug}": {
+      "get": {
+        "operationId": "UmkmController_detail",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/umkm"
+        ]
+      }
+    },
+    "/v1/cms/umkm": {
+      "get": {
+        "operationId": "UmkmCmsController_listAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/umkm"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "UmkmCmsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUmkmDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/umkm"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/umkm/{id}": {
+      "get": {
+        "operationId": "UmkmCmsController_getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/umkm"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "UmkmCmsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUmkmDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/umkm"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "UmkmCmsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/umkm"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/umkm/{id}/cover": {
+      "post": {
+        "operationId": "UmkmCmsController_uploadCover",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/umkm"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/umkm/{id}/publish": {
+      "patch": {
+        "operationId": "UmkmCmsController_publish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/umkm"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/public/village": {
+      "get": {
+        "operationId": "VillageController_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/village"
+        ]
+      }
+    },
+    "/v1/cms/village": {
+      "put": {
+        "operationId": "VillageCmsController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVillageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/village"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/village/gallery": {
+      "post": {
+        "operationId": "VillageCmsController_addGallery",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGalleryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/village"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/village/gallery/upload": {
+      "post": {
+        "operationId": "VillageCmsController_uploadGallery",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/village"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/village/gallery/{id}": {
+      "delete": {
+        "operationId": "VillageCmsController_removeGallery",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/village"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/public/planting-schedule": {
+      "get": {
+        "operationId": "PlantingScheduleController_list",
+        "summary": "Daftar musim tanam publik",
+        "description": "Mengembalikan musim tanam beserta tahapan-tahapannya. Default hanya status AKTIF. Filter opsional: ?komoditasId=&status=",
+        "parameters": [
+          {
+            "name": "komoditasId",
+            "required": false,
+            "in": "query",
+            "description": "Filter berdasarkan ID komoditas",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter status (default: AKTIF)",
+            "schema": {
+              "enum": [
+                "DRAFT",
+                "AKTIF",
+                "SELESAI"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/planting-schedule"
+        ]
+      }
+    },
+    "/v1/public/planting-schedule/komoditas": {
+      "get": {
+        "operationId": "PlantingScheduleController_listKomoditas",
+        "summary": "Daftar komoditas",
+        "description": "List seluruh komoditas yang tersedia (untuk filter dropdown di frontend).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/planting-schedule"
+        ]
+      }
+    },
+    "/v1/public/planting-schedule/{id}": {
+      "get": {
+        "operationId": "PlantingScheduleController_findOne",
+        "summary": "Detail musim tanam",
+        "description": "Detail satu musim tanam beserta seluruh tahapan-tahapannya, diurutkan berdasarkan field urutan.",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/planting-schedule"
+        ]
+      }
+    },
+    "/v1/cms/planting-schedule": {
+      "get": {
+        "operationId": "PlantingScheduleCmsController_listAll",
+        "summary": "Semua musim tanam (admin)",
+        "description": "Mengembalikan semua musim tanam tanpa filter status. Filter opsional: ?komoditasId=&status=",
+        "parameters": [
+          {
+            "name": "komoditasId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "DRAFT",
+                "AKTIF",
+                "SELESAI"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "PlantingScheduleCmsController_create",
+        "summary": "Buat musim tanam baru",
+        "description": "Membuat musim tanam baru. Opsional: sertakan array `tahapan` untuk membuat tahapan awal sekaligus. createdById diambil otomatis dari token JWT (tidak perlu di body).",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMusimTanamDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/planting-schedule/{id}": {
+      "get": {
+        "operationId": "PlantingScheduleCmsController_findOne",
+        "summary": "Detail musim tanam (admin)",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "PlantingScheduleCmsController_update",
+        "summary": "Update musim tanam",
+        "description": "Update data header musim tanam (judul, lokasi, status, dll). Untuk update tahapan gunakan endpoint /tahapan.",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMusimTanamDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "PlantingScheduleCmsController_remove",
+        "summary": "Hapus musim tanam",
+        "description": "Hard delete musim tanam beserta seluruh tahapan-tahapannya (cascade).",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/planting-schedule/{musimTanamId}/tahapan": {
+      "post": {
+        "operationId": "PlantingScheduleCmsController_createTahapan",
+        "summary": "Tambah tahapan ke musim tanam",
+        "description": "Menambahkan satu tahapan baru ke musim tanam yang sudah ada.",
+        "parameters": [
+          {
+            "name": "musimTanamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTahapanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/planting-schedule/tahapan/{id}": {
+      "put": {
+        "operationId": "PlantingScheduleCmsController_updateTahapan",
+        "summary": "Update tahapan jadwal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTahapanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "PlantingScheduleCmsController_removeTahapan",
+        "summary": "Hapus tahapan jadwal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/planting-schedule/komoditas": {
+      "post": {
+        "operationId": "PlantingScheduleCmsController_createKomoditas",
+        "summary": "Buat komoditas baru",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateKomoditasDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/planting-schedule/komoditas/{id}": {
+      "put": {
+        "operationId": "PlantingScheduleCmsController_updateKomoditas",
+        "summary": "Update komoditas",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateKomoditasDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "PlantingScheduleCmsController_removeKomoditas",
+        "summary": "Hapus komoditas",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/planting-schedule"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "NAWASENA Center API",
+    "description": "Backend NAWASENA Center untuk PPK Ormawa RDC UAD.\n\n## Cara pakai\n- Endpoint **public/** bisa diakses tanpa login (untuk website publik).\n- Endpoint **cms/** butuh login admin. Klik tombol **Authorize** di kanan atas, masukkan token (format: `Bearer <token>` tidak perlu, cukup token-nya).\n\n## Format response\nSemua response: `{ success: true, data: {...} }` atau `{ success: false, error: {...} }`.\n\n## Autentikasi\nLogin via Supabase Auth untuk dapat access_token, lalu Authorize di sini.",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "public/news",
+      "description": "Berita - akses publik (tanpa login)"
+    },
+    {
+      "name": "public/umkm",
+      "description": "UMKM - akses publik (tanpa login)"
+    },
+    {
+      "name": "public/village",
+      "description": "Profil desa - akses publik (tanpa login)"
+    },
+    {
+      "name": "cms/news",
+      "description": "Berita - kelola (admin)"
+    },
+    {
+      "name": "cms/umkm",
+      "description": "UMKM - kelola (admin)"
+    },
+    {
+      "name": "cms/village",
+      "description": "Profil desa - kelola (admin)"
+    },
+    {
+      "name": "auth",
+      "description": "Autentikasi"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "access-token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Masukkan access_token dari Supabase Auth (tanpa kata Bearer)"
+      }
+    },
+    "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "admin@nawasena.id",
+            "description": "Email akun (terdaftar di Supabase Auth)"
+          },
+          "password": {
+            "type": "string",
+            "example": "admin1234",
+            "description": "Password akun"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RefreshDto": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "example": "v1.Mr...",
+            "description": "refresh_token dari hasil login"
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
+      },
+      "CreateNewsDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Sosialisasi Akbar NAWASENA",
+            "description": "Judul berita"
+          },
+          "excerpt": {
+            "type": "string",
+            "example": "Ringkasan singkat berita.",
+            "description": "Ringkasan untuk kartu/list"
+          },
+          "content": {
+            "type": "string",
+            "example": "Isi lengkap berita minimal sepuluh karakter.",
+            "description": "Konten lengkap (markdown/HTML)"
+          },
+          "coverUrl": {
+            "type": "string",
+            "example": "https://.../cover.jpg",
+            "description": "URL cover (isi via upload)"
+          },
+          "category": {
+            "type": "string",
+            "example": "Kegiatan",
+            "description": "Kategori berita (UI only)"
+          },
+          "author": {
+            "type": "string",
+            "example": "Tim Redaksi",
+            "description": "Nama penulis (UI only)"
+          }
+        },
+        "required": [
+          "title",
+          "content"
+        ]
+      },
+      "UpdateNewsDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Sosialisasi Akbar NAWASENA",
+            "description": "Judul berita"
+          },
+          "excerpt": {
+            "type": "string",
+            "example": "Ringkasan singkat berita.",
+            "description": "Ringkasan untuk kartu/list"
+          },
+          "content": {
+            "type": "string",
+            "example": "Isi lengkap berita minimal sepuluh karakter.",
+            "description": "Konten lengkap (markdown/HTML)"
+          },
+          "coverUrl": {
+            "type": "string",
+            "example": "https://.../cover.jpg",
+            "description": "URL cover (isi via upload)"
+          },
+          "category": {
+            "type": "string",
+            "example": "Kegiatan",
+            "description": "Kategori berita (UI only)"
+          },
+          "author": {
+            "type": "string",
+            "example": "Tim Redaksi",
+            "description": "Nama penulis (UI only)"
+          }
+        }
+      },
+      "IngestDto": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "example": "ROVER-01",
+            "description": "ID perangkat (Rover/Trap)"
+          },
+          "type": {
+            "type": "string",
+            "example": "rover",
+            "description": "Jenis data: rover | trap | status"
+          },
+          "data": {
+            "type": "object",
+            "example": {
+              "lat": -7.92,
+              "lng": 110.38,
+              "heading": 90,
+              "gpsFix": true,
+              "sats": 8,
+              "status": "patrolling"
+            },
+            "description": "Isi data sesuai type. Rover: lat,lng,heading,gpsFix,sats,status. Trap: bebas."
+          },
+          "recordedAt": {
+            "type": "string",
+            "example": "2026-06-15T10:00:00Z",
+            "description": "Waktu rekam (opsional, default now)"
+          }
+        },
+        "required": [
+          "deviceId",
+          "type",
+          "data"
+        ]
+      },
+      "CreateScheduleDto": {
+        "type": "object",
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "example": "Pak Sutrisno",
+            "description": "Nama petani"
+          },
+          "fieldName": {
+            "type": "string",
+            "example": "Sawah Blok A",
+            "description": "Nama/kode lahan"
+          },
+          "padukuhan": {
+            "type": "string",
+            "example": "Karangtengah",
+            "description": "Padukuhan (untuk tanam serentak per wilayah)"
+          },
+          "plantDate": {
+            "type": "string",
+            "example": "2026-06-20",
+            "description": "Tanggal tanam (YYYY-MM-DD)"
+          },
+          "estimatedHarvest": {
+            "type": "string",
+            "example": "2026-10-13",
+            "description": "Perkiraan panen. Kosongkan untuk hitung otomatis dari umur padi."
+          },
+          "cropDays": {
+            "type": "number",
+            "example": 115,
+            "description": "Umur padi (hari) untuk hitung estimasi panen otomatis. Default 115."
+          },
+          "notes": {
+            "type": "string",
+            "example": "Varietas IR64"
+          }
+        },
+        "required": [
+          "farmerName",
+          "plantDate"
+        ]
+      },
+      "UpdateScheduleDto": {
+        "type": "object",
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "example": "Pak Sutrisno",
+            "description": "Nama petani"
+          },
+          "fieldName": {
+            "type": "string",
+            "example": "Sawah Blok A",
+            "description": "Nama/kode lahan"
+          },
+          "padukuhan": {
+            "type": "string",
+            "example": "Karangtengah",
+            "description": "Padukuhan (untuk tanam serentak per wilayah)"
+          },
+          "plantDate": {
+            "type": "string",
+            "example": "2026-06-20",
+            "description": "Tanggal tanam (YYYY-MM-DD)"
+          },
+          "estimatedHarvest": {
+            "type": "string",
+            "example": "2026-10-13",
+            "description": "Perkiraan panen. Kosongkan untuk hitung otomatis dari umur padi."
+          },
+          "cropDays": {
+            "type": "number",
+            "example": 115,
+            "description": "Umur padi (hari) untuk hitung estimasi panen otomatis. Default 115."
+          },
+          "notes": {
+            "type": "string",
+            "example": "Varietas IR64"
+          },
+          "status": {
+            "type": "string",
+            "example": "planted",
+            "description": "planned | planted | harvested"
+          }
+        }
+      },
+      "CreateHarvestDto": {
+        "type": "object",
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "example": "Pak Sutrisno",
+            "description": "Nama petani"
+          },
+          "fieldName": {
+            "type": "string",
+            "example": "Sawah Blok A"
+          },
+          "padukuhan": {
+            "type": "string",
+            "example": "Karangtengah",
+            "description": "Padukuhan"
+          },
+          "ubinanKg": {
+            "type": "number",
+            "example": 4.2,
+            "description": "Berat hasil ubinan 2.5x2.5m (kg)"
+          },
+          "areaHa": {
+            "type": "number",
+            "example": 0.5,
+            "description": "Luas lahan petani (hektar) untuk estimasi total"
+          },
+          "pestLossPct": {
+            "type": "number",
+            "example": 8.5,
+            "description": "Persen kerusakan akibat hama (target < 15%)"
+          },
+          "harvestDate": {
+            "type": "string",
+            "example": "2026-10-15",
+            "description": "Tanggal panen"
+          },
+          "scheduleId": {
+            "type": "string",
+            "example": "uuid-jadwal",
+            "description": "ID jadwal tanam terkait (opsional)"
+          }
+        },
+        "required": [
+          "farmerName",
+          "ubinanKg",
+          "areaHa",
+          "harvestDate"
+        ]
+      },
+      "UpdateHarvestDto": {
+        "type": "object",
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "example": "Pak Sutrisno",
+            "description": "Nama petani"
+          },
+          "fieldName": {
+            "type": "string",
+            "example": "Sawah Blok A"
+          },
+          "padukuhan": {
+            "type": "string",
+            "example": "Karangtengah",
+            "description": "Padukuhan"
+          },
+          "ubinanKg": {
+            "type": "number",
+            "example": 4.2,
+            "description": "Berat hasil ubinan 2.5x2.5m (kg)"
+          },
+          "areaHa": {
+            "type": "number",
+            "example": 0.5,
+            "description": "Luas lahan petani (hektar) untuk estimasi total"
+          },
+          "pestLossPct": {
+            "type": "number",
+            "example": 8.5,
+            "description": "Persen kerusakan akibat hama (target < 15%)"
+          },
+          "harvestDate": {
+            "type": "string",
+            "example": "2026-10-15",
+            "description": "Tanggal panen"
+          },
+          "scheduleId": {
+            "type": "string",
+            "example": "uuid-jadwal",
+            "description": "ID jadwal tanam terkait (opsional)"
+          }
+        }
+      },
+      "ProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Keripik Original",
+            "description": "Nama produk"
+          },
+          "price": {
+            "type": "number",
+            "example": 12000,
+            "description": "Harga dalam rupiah"
+          },
+          "unit": {
+            "type": "string",
+            "example": "bungkus",
+            "description": "Satuan: pcs, kg, bungkus"
+          },
+          "stock": {
+            "type": "number",
+            "example": 50,
+            "description": "Jumlah stok"
+          },
+          "photoUrl": {
+            "type": "string",
+            "example": "https://.../produk.jpg"
+          },
+          "note": {
+            "type": "string",
+            "example": "200gr",
+            "description": "Catatan produk"
+          }
+        },
+        "required": [
+          "name",
+          "price"
+        ]
+      },
+      "CreateUmkmDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Keripik Tela Bu Sari",
+            "description": "Nama usaha"
+          },
+          "ownerName": {
+            "type": "string",
+            "example": "Bu Sari",
+            "description": "Nama pemilik"
+          },
+          "description": {
+            "type": "string",
+            "example": "Keripik singkong renyah aneka rasa."
+          },
+          "category": {
+            "type": "string",
+            "example": "makanan",
+            "description": "makanan | kerajinan | tani | lainnya"
+          },
+          "coverUrl": {
+            "type": "string",
+            "example": "https://.../cover.jpg"
+          },
+          "contactPhone": {
+            "type": "string",
+            "example": "081234567801",
+            "description": "Nomor WA/telepon"
+          },
+          "contactAddress": {
+            "type": "string",
+            "example": "Padukuhan Karangtengah"
+          },
+          "products": {
+            "description": "Daftar produk",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDto"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateUmkmDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Keripik Tela Bu Sari",
+            "description": "Nama usaha"
+          },
+          "ownerName": {
+            "type": "string",
+            "example": "Bu Sari",
+            "description": "Nama pemilik"
+          },
+          "description": {
+            "type": "string",
+            "example": "Keripik singkong renyah aneka rasa."
+          },
+          "category": {
+            "type": "string",
+            "example": "makanan",
+            "description": "makanan | kerajinan | tani | lainnya"
+          },
+          "coverUrl": {
+            "type": "string",
+            "example": "https://.../cover.jpg"
+          },
+          "contactPhone": {
+            "type": "string",
+            "example": "081234567801",
+            "description": "Nomor WA/telepon"
+          },
+          "contactAddress": {
+            "type": "string",
+            "example": "Padukuhan Karangtengah"
+          },
+          "products": {
+            "description": "Daftar produk",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDto"
+            }
+          }
+        }
+      },
+      "UpdateVillageDto": {
+        "type": "object",
+        "properties": {
+          "vision": {
+            "type": "string",
+            "example": "Mewujudkan desa smart farming."
+          },
+          "mission": {
+            "type": "string",
+            "example": "Memberdayakan pemuda dan petani."
+          },
+          "description": {
+            "type": "string",
+            "example": "Kalurahan Karangtengah, Imogiri, Bantul."
+          },
+          "potency": {
+            "type": "object",
+            "example": [
+              {
+                "title": "Pertanian Padi",
+                "desc": "Lahan produktif."
+              }
+            ],
+            "description": "Array potensi desa"
+          },
+          "stats": {
+            "type": "object",
+            "example": {
+              "population": 6800,
+              "families": 1709,
+              "area_ha": 350
+            },
+            "description": "Statistik demografi"
+          }
+        }
+      },
+      "CreateGalleryDto": {
+        "type": "object",
+        "properties": {
+          "imageUrl": {
+            "type": "string",
+            "example": "https://.../foto.jpg",
+            "description": "URL gambar"
+          },
+          "caption": {
+            "type": "string",
+            "example": "Sawah Karangtengah"
+          },
+          "orderIndex": {
+            "type": "number",
+            "example": 0,
+            "description": "Urutan tampil"
+          }
+        },
+        "required": [
+          "imageUrl"
+        ]
+      },
+      "CreateTahapanDto": {
+        "type": "object",
+        "properties": {
+          "namaTahapan": {
+            "type": "string",
+            "example": "Penyemaian Benih",
+            "description": "Nama tahapan kegiatan"
+          },
+          "tanggalMulai": {
+            "type": "string",
+            "example": "2026-09-02T00:00:00.000Z",
+            "description": "Tanggal mulai tahapan (ISO 8601)"
+          },
+          "tanggalSelesai": {
+            "type": "string",
+            "example": "2026-09-10T00:00:00.000Z",
+            "description": "Tanggal selesai tahapan (opsional)"
+          },
+          "urutan": {
+            "type": "number",
+            "example": 1,
+            "description": "Urutan tampil di timeline (mulai dari 1)"
+          },
+          "deskripsi": {
+            "type": "string",
+            "example": "Benih disemai di persemaian selama 21 hari"
+          }
+        },
+        "required": [
+          "namaTahapan",
+          "tanggalMulai",
+          "urutan"
+        ]
+      },
+      "CreateMusimTanamDto": {
+        "type": "object",
+        "properties": {
+          "judul": {
+            "type": "string",
+            "example": "Musim Tanam Gadu 2026",
+            "description": "Judul musim tanam (wajib)"
+          },
+          "komoditasId": {
+            "type": "string",
+            "example": "uuid-komoditas",
+            "description": "ID Komoditas (UUID)"
+          },
+          "lokasi": {
+            "type": "string",
+            "example": "Blok A - Karangtengah",
+            "description": "Blok/wilayah sawah"
+          },
+          "tanggalMulai": {
+            "type": "string",
+            "example": "2026-09-01T00:00:00.000Z",
+            "description": "Tanggal mulai musim tanam (ISO 8601)"
+          },
+          "tanggalSelesai": {
+            "type": "string",
+            "example": "2026-12-31T00:00:00.000Z",
+            "description": "Tanggal selesai musim tanam (ISO 8601)"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "AKTIF",
+              "SELESAI"
+            ],
+            "default": "DRAFT",
+            "description": "Status musim tanam: DRAFT | AKTIF | SELESAI"
+          },
+          "tahapan": {
+            "description": "Daftar tahapan awal (opsional, bisa ditambah belakangan)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateTahapanDto"
+            }
+          }
+        },
+        "required": [
+          "judul",
+          "komoditasId"
+        ]
+      },
+      "UpdateMusimTanamDto": {
+        "type": "object",
+        "properties": {
+          "judul": {
+            "type": "string",
+            "example": "Musim Tanam Gadu 2026",
+            "description": "Judul musim tanam (wajib)"
+          },
+          "komoditasId": {
+            "type": "string",
+            "example": "uuid-komoditas",
+            "description": "ID Komoditas (UUID)"
+          },
+          "lokasi": {
+            "type": "string",
+            "example": "Blok A - Karangtengah",
+            "description": "Blok/wilayah sawah"
+          },
+          "tanggalMulai": {
+            "type": "string",
+            "example": "2026-09-01T00:00:00.000Z",
+            "description": "Tanggal mulai musim tanam (ISO 8601)"
+          },
+          "tanggalSelesai": {
+            "type": "string",
+            "example": "2026-12-31T00:00:00.000Z",
+            "description": "Tanggal selesai musim tanam (ISO 8601)"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "AKTIF",
+              "SELESAI"
+            ],
+            "default": "DRAFT",
+            "description": "Status musim tanam: DRAFT | AKTIF | SELESAI"
+          },
+          "tahapan": {
+            "description": "Daftar tahapan awal (opsional, bisa ditambah belakangan)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateTahapanDto"
+            }
+          }
+        }
+      },
+      "UpdateTahapanDto": {
+        "type": "object",
+        "properties": {
+          "namaTahapan": {
+            "type": "string",
+            "example": "Penyemaian Benih",
+            "description": "Nama tahapan kegiatan"
+          },
+          "tanggalMulai": {
+            "type": "string",
+            "example": "2026-09-02T00:00:00.000Z",
+            "description": "Tanggal mulai tahapan (ISO 8601)"
+          },
+          "tanggalSelesai": {
+            "type": "string",
+            "example": "2026-09-10T00:00:00.000Z",
+            "description": "Tanggal selesai tahapan (opsional)"
+          },
+          "urutan": {
+            "type": "number",
+            "example": 1,
+            "description": "Urutan tampil di timeline (mulai dari 1)"
+          },
+          "deskripsi": {
+            "type": "string",
+            "example": "Benih disemai di persemaian selama 21 hari"
+          }
+        }
+      },
+      "CreateKomoditasDto": {
+        "type": "object",
+        "properties": {
+          "nama": {
+            "type": "string",
+            "example": "Padi",
+            "description": "Nama komoditas"
+          },
+          "deskripsi": {
+            "type": "string",
+            "example": "Komoditas utama padi sawah"
+          }
+        },
+        "required": [
+          "nama"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: nawasena-api
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm install --include=dev && npx prisma generate && npx nest build && ls -la dist
+    startCommand: npx prisma migrate deploy && node dist/main.js
+    healthCheckPath: /v1/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: STORAGE_BUCKET
+        value: public-content
+      - key: BRIDGE_API_KEY
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000

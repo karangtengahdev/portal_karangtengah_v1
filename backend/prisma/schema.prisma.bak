@@ -1,0 +1,233 @@
+// NAWASENA Center - Prisma Schema
+// PostgreSQL via Supabase. Pooling (DATABASE_URL) untuk runtime, Direct (DIRECT_URL) untuk migrate.
+// Auth tetap Supabase Auth (tabel auth.users dikelola Supabase, di sini hanya mirror via profiles).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================
+// INTERNAL / PROGRAM
+// ============================================================
+
+// Mirror profil user. id = auth.users.id (UUID dari Supabase Auth).
+model Profile {
+  id        String   @id @db.Uuid
+  email     String?  @unique
+  fullName  String?  @map("full_name")
+  role      String   @default("operator") // admin | operator | viewer
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  news News[]
+
+  @@map("profiles")
+}
+
+// Device terdaftar (Trap / Rover / Bridge)
+model Device {
+  id        String   @id @default(uuid()) @db.Uuid
+  deviceId  String   @unique @map("device_id") // contoh TRAP-01, ROVER-01
+  type      String // trap | rover | bridge
+  name      String?
+  status    String   @default("offline") // online | offline
+  meta      Json?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  telemetry      Telemetry[]
+  trapEvents     TrapEvent[]
+  roverOps       RoverOperation[]
+
+  @@map("devices")
+}
+
+// Telemetri umum (semua device kirim ke sini via Bridge)
+model Telemetry {
+  id        String   @id @default(uuid()) @db.Uuid
+  deviceId  String   @map("device_id") // text, cocok dgn Device.deviceId
+  payload   Json
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
+
+  device Device? @relation(fields: [deviceId], references: [deviceId])
+
+  @@index([deviceId, recordedAt])
+  @@map("telemetry")
+}
+
+// Event dari Trap (hama terdeteksi, dll)
+model TrapEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  deviceId  String   @map("device_id")
+  eventType String   @map("event_type") // pest_detected | trap_triggered | status
+  data      Json?
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
+
+  device Device? @relation(fields: [deviceId], references: [deviceId])
+
+  @@index([deviceId, recordedAt])
+  @@map("trap_events")
+}
+
+// Operasi Rover (patroli, posisi) - read-only monitoring
+model RoverOperation {
+  id        String   @id @default(uuid()) @db.Uuid
+  deviceId  String   @map("device_id")
+  lat       Float?
+  lng       Float?
+  heading   Float?
+  gpsFix    Boolean? @map("gps_fix")
+  sats      Int?
+  status    String? // patrolling | idle | charging
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
+
+  device Device? @relation(fields: [deviceId], references: [deviceId])
+
+  @@index([deviceId, recordedAt])
+  @@map("rover_operations")
+}
+
+// Jadwal tanam (Digital Farming Scheduler)
+model FieldSchedule {
+  id          String   @id @default(uuid()) @db.Uuid
+  farmerName  String   @map("farmer_name")
+  fieldName   String?  @map("field_name")
+  padukuhan   String?
+  plantDate   DateTime @map("plant_date") @db.Date
+  estimatedHarvest DateTime? @map("estimated_harvest") @db.Date
+  status      String   @default("planned") // planned | planted | harvested
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  notifications Notification[]
+
+  @@map("field_schedules")
+}
+
+// Catatan panen + perhitungan ubinan (NAWASENA Calculating)
+model HarvestRecord {
+  id           String   @id @default(uuid()) @db.Uuid
+  farmerName   String   @map("farmer_name")
+  fieldName    String?  @map("field_name")
+  ubinanKg     Float    @map("ubinan_kg") // berat ubinan 2.5x2.5m
+  areaHa       Float    @map("area_ha")
+  yieldTonHa   Float?   @map("yield_ton_ha")    // dihitung: ubinan_kg * 1.6
+  estimatedKg  Float?   @map("estimated_kg")
+  pestLossPct  Float?   @map("pest_loss_pct")
+  harvestDate  DateTime @map("harvest_date") @db.Date
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("harvest_records")
+}
+
+// Logbook kegiatan
+model LogbookEntry {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String
+  body      String?
+  category  String? // teknis | non-teknis | admin
+  authorId  String?  @map("author_id") @db.Uuid
+  entryDate DateTime @map("entry_date") @db.Date
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("logbook_entries")
+}
+
+// Notifikasi (cron H-7/H-3/H-1)
+model Notification {
+  id         String   @id @default(uuid()) @db.Uuid
+  scheduleId String?  @map("schedule_id") @db.Uuid
+  channel    String   @default("whatsapp") // whatsapp | system
+  target     String? // nomor / user
+  message    String
+  status     String   @default("pending") // pending | sent | failed
+  sentAt     DateTime? @map("sent_at") @db.Timestamptz
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  schedule FieldSchedule? @relation(fields: [scheduleId], references: [id])
+
+  @@map("notifications")
+}
+
+// ============================================================
+// PUBLIC CONTENT (modul baru)
+// ============================================================
+
+model News {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String
+  slug        String    @unique
+  excerpt     String?
+  content     String
+  coverUrl    String?   @map("cover_url")
+  status      String    @default("draft") // draft | published
+  publishedAt DateTime? @map("published_at") @db.Timestamptz
+  authorId    String?   @map("author_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  author Profile? @relation(fields: [authorId], references: [id])
+
+  @@index([status, publishedAt])
+  @@map("news")
+}
+
+model Umkm {
+  id             String   @id @default(uuid()) @db.Uuid
+  name           String
+  slug           String   @unique
+  ownerName      String?  @map("owner_name")
+  description    String?
+  category       String?  // makanan | kerajinan | tani | lainnya
+  coverUrl       String?  @map("cover_url")
+  contactPhone   String?  @map("contact_phone")
+  contactAddress String?  @map("contact_address")
+  products       Json?    // [{name, price, unit, stock, photoUrl, note}]
+  status         String   @default("draft") // draft | published
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status])
+  @@index([category])
+  @@map("umkm")
+}]
+  images         Json?    // [url1, url2]
+  contactPhone   String?  @map("contact_phone")
+  contactAddress String?  @map("contact_address")
+  status         String   @default("draft")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status])
+  @@map("umkm")
+}
+
+// Profil desa - singleton (1 baris)
+model VillageProfile {
+  id          String   @id @default(uuid()) @db.Uuid
+  vision      String?
+  mission     String?
+  description String?
+  potency     Json?    // [{title, desc}]
+  stats       Json?    // {population, families, area_ha}
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("village_profile")
+}
+
+model VillageGallery {
+  id         String   @id @default(uuid()) @db.Uuid
+  imageUrl   String   @map("image_url")
+  caption    String?
+  orderIndex Int      @default(0) @map("order_index")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("village_gallery")
+}

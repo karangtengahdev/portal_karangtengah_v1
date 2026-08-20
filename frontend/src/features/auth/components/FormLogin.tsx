@@ -1,0 +1,135 @@
+import { TextInput, PasswordInput, Button, Alert, Paper, Text, Title, Divider } from '@mantine/core';
+import { IconArrowLeft, IconArrowRight, IconLock, IconMail, IconAlertCircle, IconSeeding } from '@tabler/icons-react';
+import type { FormEvent } from 'react';
+import { Link } from 'react-router-dom';
+
+type FormLoginProps = {
+  email: string;
+  password: string;
+  isSubmitting: boolean;
+  errorMessage: string | null;
+  onEmailChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+};
+
+export const FormLogin = ({
+  email,
+  password,
+  isSubmitting,
+  errorMessage,
+  onEmailChange,
+  onPasswordChange,
+  onSubmit,
+}: FormLoginProps) => {
+  return (
+    <Paper className="flex h-full flex-col justify-center p-6 sm:p-10 font-['Plus_Jakarta_Sans']" radius={0} bg="transparent">
+      <div className="mx-auto w-full max-w-sm">
+        {/* Brand mark */}
+        <div className="mb-8 flex flex-col items-start">
+          <div className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-[#1F4A34]/10 text-[#1F4A34]">
+            <IconSeeding size={24} stroke={1.6} />
+          </div>
+          <Text size="sm" fw={600} tt="uppercase" style={{ letterSpacing: '0.18em' }} c="#8A5A3B">
+            Dashboard Desa
+          </Text>
+          <Title order={2} mt={6} c="#1C2620" fw={700}>
+            Selamat Datang Kembali
+          </Title>
+          <div className="mt-3 h-[3px] w-12 rounded-full bg-[#D9A441]" />
+          <Text size="sm" mt="sm" c="dimmed">
+            Masuk untuk mengelola data desa, panen, UMKM, dan berita.
+          </Text>
+        </div>
+
+        {/* Elegant card wrapper for the fields */}
+        <div className="rounded-2xl border border-neutral-200/80 bg-white/70 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm sm:p-7">
+          <form onSubmit={onSubmit} className="flex flex-col gap-4">
+            <TextInput
+              label="Email"
+              placeholder="Masukkan email Anda"
+              leftSection={<IconMail size={18} className="text-neutral-400" />}
+              value={email}
+              onChange={(event) => onEmailChange(event.currentTarget.value)}
+              type="email"
+              required
+              size="md"
+              radius="md"
+              styles={{
+                label: { fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#8A5A3B', marginBottom: 6 },
+                input: { borderColor: '#E5E1D6' },
+              }}
+              classNames={{ input: 'focus:border-[#1F4A34]' }}
+            />
+
+            <PasswordInput
+              label="Password"
+              placeholder="Masukkan password Anda"
+              leftSection={<IconLock size={18} className="text-neutral-400" />}
+              value={password}
+              onChange={(event) => onPasswordChange(event.currentTarget.value)}
+              required
+              size="md"
+              radius="md"
+              styles={{
+                label: { fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#8A5A3B', marginBottom: 6 },
+                input: { borderColor: '#E5E1D6' },
+              }}
+              classNames={{ input: 'focus:border-[#1F4A34]' }}
+            />
+
+            {errorMessage && (
+              <Alert
+                icon={<IconAlertCircle size={16} />}
+                title="Gagal Masuk"
+                variant="light"
+                radius="md"
+                styles={{
+                  root: { backgroundColor: 'rgba(193,80,46,0.08)', borderColor: 'rgba(193,80,46,0.25)' },
+                  title: { color: '#C1502E' },
+                  body: { color: '#8A5A3B' },
+                  icon: { color: '#C1502E' },
+                }}
+              >
+                {errorMessage}
+              </Alert>
+            )}
+
+            <Button
+              type="submit"
+              loading={isSubmitting}
+              rightSection={<IconArrowRight size={18} />}
+              size="md"
+              radius="md"
+              mt="sm"
+              fullWidth
+              styles={{ root: { backgroundColor: '#1F4A34', '&:hover': { backgroundColor: '#173a29' } } }}
+            >
+              Masuk
+            </Button>
+          </form>
+        </div>
+
+        {/* Back to dashboard: real link, not a fake button inside the form */}
+        <Button
+          component={Link}
+          to="/"
+          variant="subtle"
+          leftSection={<IconArrowLeft size={16} />}
+          size="sm"
+          radius="md"
+          mt="lg"
+          fullWidth
+          styles={{ root: { color: '#1F4A34' } }}
+        >
+          Kembali ke Beranda
+        </Button>
+
+        <Divider mt="xl" mb="md" color="#EDEAE0" />
+        <Text size="xs" ta="center" c="dimmed">
+          &copy; {new Date().getFullYear()} Portal Desa &middot; Studyblog Is The Best
+        </Text>
+      </div>
+    </Paper>
+  );
+};

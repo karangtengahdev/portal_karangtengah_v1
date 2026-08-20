@@ -1,0 +1,18 @@
+services:
+  backend:
+    build:
+      context: .             # Ubah ini menjadi titik
+      target: dev            # pakai stage "dev" dari Dockerfile (hot-reload)
+    container_name: nawasena-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app               # Ubah ini juga menjadi titik
+      - backend_node_modules:/app/node_modules   # jangan timpa node_modules dari host
+    command: npm run start:dev
+
+volumes:
+  backend_node_modules:

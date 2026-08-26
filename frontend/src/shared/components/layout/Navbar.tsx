@@ -10,7 +10,6 @@ import {
   IconNews,
   IconPlant2,
   IconPhone,
-  IconSeeding,
   IconSparkles,
   IconX,
 } from '@tabler/icons-react';

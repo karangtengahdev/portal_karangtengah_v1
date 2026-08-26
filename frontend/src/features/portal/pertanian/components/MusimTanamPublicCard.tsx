@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { MusimTanam } from '../types/plantingSchedule';
-import { formatTanggalId, formatTanggalPendek, hitungProgressMusim } from '../utils/formatPlantingSchedule';
+import { formatTanggalPendek, hitungProgressMusim } from '../utils/formatPlantingSchedule';
 import { TimelineTahapan } from './TimelineTahapan';
 import { IconCalendarEvent, IconChevronDown, IconLeaf, IconMapPin } from '@tabler/icons-react';
 

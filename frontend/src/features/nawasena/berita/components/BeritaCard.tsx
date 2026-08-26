@@ -1,6 +1,6 @@
-import { IconCalendarEvent, IconEdit, IconEye, IconPhoto, IconTag, IconTrash, IconUpload } from '@tabler/icons-react';
+import { IconEdit, IconEye, IconPhoto, IconTag, IconTrash, IconUpload } from '@tabler/icons-react';
 import type { BeritaItem, BeritaStatus } from '../types/berita';
-import { formatBeritaDate, formatViews, getStatusLabel } from '../utils/formatBerita';
+import { getStatusLabel } from '../utils/formatBerita';
 
 type BeritaCardProps = {
   article: BeritaItem;

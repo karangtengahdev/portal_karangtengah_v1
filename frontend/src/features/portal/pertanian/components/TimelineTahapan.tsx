@@ -33,10 +33,10 @@ export const TimelineTahapan = ({ tahapan }: Props) => {
       <div className="absolute left-[19px] top-5 bottom-5 w-0.5 bg-gradient-to-b from-[#4f842f]/60 via-[#b8ee70]/40 to-[#d1e9bb]/30" />
 
       <div className="space-y-0">
-        {tahapan.map((t, idx) => {
+        {tahapan.map((t, _idx) => {
           const lewat = isLewat(t.tanggalSelesai ?? t.tanggalMulai);
           const berjalan = isBerjalan(t.tanggalMulai, t.tanggalSelesai);
-          const isLast = idx === tahapan.length - 1;
+          // const isLast = idx === tahapan.length - 1;
 
           return (
             <div key={t.id} className="relative flex gap-4 pb-6 last:pb-0">

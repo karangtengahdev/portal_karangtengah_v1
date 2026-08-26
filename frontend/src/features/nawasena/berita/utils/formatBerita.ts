@@ -1,15 +1,8 @@
-import type {
-  BeritaHomepagePlacement,
-  BeritaStatus,
-} from '../types/berita';
+import type { BeritaStatus } from '../types/berita';
 
 export const formatBeritaDate = (date: string) => {
   const parsedDate = new Date(date);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return date;
-  }
-
+  if (Number.isNaN(parsedDate.getTime())) return date;
   return new Intl.DateTimeFormat('id-ID', {
     day: 'numeric',
     month: 'long',
@@ -22,24 +15,8 @@ export const formatViews = (views: number) =>
 
 export const getStatusLabel = (status: BeritaStatus) => {
   const labels: Record<BeritaStatus, string> = {
-    archived: 'Arsip',
     draft: 'Draft',
     published: 'Terbit',
-    review: 'Review',
   };
-
   return labels[status];
 };
-
-export const getHomepagePlacementLabel = (
-  placement: BeritaHomepagePlacement,
-) => {
-  const labels: Record<BeritaHomepagePlacement, string> = {
-    featured: 'Sorotan Utama',
-    none: 'Tidak tampil',
-    supporting: 'Pendukung',
-  };
-
-  return labels[placement];
-};
-

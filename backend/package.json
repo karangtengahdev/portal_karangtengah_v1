@@ -5,7 +5,7 @@
   "author": "Candra - RDC UAD",
   "private": true,
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main.js",
@@ -15,10 +15,12 @@
     "prisma:studio": "prisma studio",
     "seed": "ts-node prisma/seed.ts",
     "seed:umkm": "ts-node prisma/seed-umkm.ts",
+    "seed:news": "ts-node prisma/seed-news.ts",
     "seed:village": "ts-node prisma/seed-village.ts",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "test": "jest",
     "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && nest build",
     "prebuild": "rm -rf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
@@ -32,7 +34,7 @@
     "@nestjs/schedule": "^4.1.0",
     "@nestjs/swagger": "^7.4.0",
     "@nestjs/websockets": "^10.4.0",
-    "@prisma/client": "^5.18.0",
+    "@prisma/client": "^5.22.0",
     "@supabase/supabase-js": "^2.45.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -41,6 +43,7 @@
     "jwks-rsa": "^3.1.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "pg": "^8.23.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -52,9 +55,10 @@
     "@types/multer": "^2.1.0",
     "@types/node": "^22.0.0",
     "@types/passport-jwt": "^4.0.1",
+    "@types/pg": "^8.23.1",
     "@vercel/node": "^5.9.2",
     "jest": "^29.7.0",
-    "prisma": "^5.18.0",
+    "prisma": "^5.22.0",
     "ts-jest": "^29.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.0"

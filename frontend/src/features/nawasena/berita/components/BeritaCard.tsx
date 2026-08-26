@@ -12,9 +12,7 @@ type BeritaCardProps = {
 
 const getStatusClass = (status: BeritaStatus) => {
   if (status === 'published') return 'bg-[#4C8C5B]/15 text-[#1F4A34]';
-  if (status === 'review') return 'bg-[#D9A441]/20 text-[#8A5A3B]';
-  if (status === 'archived') return 'bg-neutral-200 text-neutral-600';
-  return 'bg-neutral-100 text-neutral-600';
+  return 'bg-neutral-100 text-neutral-600'; // draft
 };
 
 // const getPlacementClass = (placement: BeritaHomepagePlacement) => {
@@ -68,9 +66,8 @@ export const BeritaCard = ({ article, onDelete, onEdit, onTogglePublish, onUploa
         </p>
 
         <div className="mt-3 flex flex-wrap gap-4 text-sm text-neutral-500">
-          <p>{article.authorId || 'Admin'}</p>
-          <p className="inline-flex items-center gap-1.5"><IconCalendarEvent size={16} />{formatBeritaDate(article.publishedAt || article.createdAt)}</p>
-          <p className="inline-flex items-center gap-1.5"><IconEye size={16} />{formatViews(article.views || 0)} dilihat</p>
+          <p>{article.author || 'Admin'}</p>
+          <p className="inline-flex items-center gap-1.5"><IconEye size={16} />— dilihat</p>
         </div>
       </div>
 

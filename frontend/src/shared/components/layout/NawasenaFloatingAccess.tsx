@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { IconLayoutDashboard, IconLogin2 } from '@tabler/icons-react';
 
-import { useAuth } from '../../../app/providers/AuthContext';
+import { getHomePathForRole, useAuth } from '../../../app/providers/AuthContext';
 
 export const NawasenaFloatingAccess = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, role } = useAuth();
   const location = useLocation();
   const label = isAuthenticated ? 'Buka Dashboard' : 'Masuk Pengelola';
 
@@ -16,8 +16,7 @@ export const NawasenaFloatingAccess = () => {
     <Link
       aria-label={label}
       className="group fixed bottom-5 right-5 z-[1001] grid h-14 w-14 place-items-center rounded-full bg-[#070907] shadow-[0_16px_36px_rgba(16,23,8,0.36)] ring-8 ring-[#070907]/10 transition hover:-translate-y-0.5 hover:bg-[#12170f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffd62e] sm:bottom-6 sm:right-6"
-      state={isAuthenticated ? undefined : { from: { pathname: '/dashboard' } }}
-      to={isAuthenticated ? '/dashboard' : '/login'}
+      to={isAuthenticated ? getHomePathForRole(role) : '/login'}
     >
       <span
         aria-hidden="true"

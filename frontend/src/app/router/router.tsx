@@ -6,7 +6,7 @@ import { RegisterPage } from '../../features/auth/pages/RegisterPage';
 import { AdminBeritaPage } from '../../features/nawasena/berita/pages/AdminBeritaPage';
 import { DashboardNawasenaPage } from '../../features/nawasena/dashboard/pages/DashboardNawasenaPage';
 import { NawasenaLayout } from '../../features/nawasena/layout/NawasenaLayout';
-// import { ScheduleNawasenaPage } from '../../features/nawasena/schedule/pages/ScheduleNawasenaPage';
+import { DashboardPortalPage } from '../../features/portal-admin/dashboard/pages/DashboardPortalPage';
 import { BeritaPage as PortalBeritaPage } from '../../features/portal/berita/pages/BeritaPage';
 import { DashboardPage } from '../../features/portal/dashboard/pages/DashboardPage';
 import { InfografisPage } from '../../features/portal/infografis/pages/InfografisPage';
@@ -24,88 +24,61 @@ import { AdminPlantingSchedulePage } from '../../features/nawasena/planting-sche
 import { JadwalTanamPage } from '../../features/portal/pertanian/pages/JadwalTanamPage';
 
 export const router = createBrowserRouter([
+  // ============ PORTAL PUBLIK (tidak perlu login) ============
   {
     path: '/',
     element: <DashboardLayout />,
     children: [
-      {
-        index: true,
-        element: <DashboardPage />,
-      },
-      {
-        path: 'berita',
-        element: <PortalBeritaPage />,
-      },
-      {
-        path: 'pertanian',
-        element: <PertanianPage />,
-      },
-      {
-        path: 'umkm',
-        element: <UmkmPage />,
-      },
-      {
-        path: 'infografis',
-        element: <InfografisPage />,
-      },
-      {
-        path: 'nawasena',
-        element: <NawasenaPage />,
-      },
-      {
-        path: 'kontak',
-        element: <KontakPage />,
-      },
-       {
-            path: 'berita/:slug',
-            element: <BeritaDetailPage />,
-          },
-      {
-        path: 'jadwal-tanam',
-        element: <JadwalTanamPage />,
-      },
+      { index: true, element: <DashboardPage /> },
+      { path: 'berita', element: <PortalBeritaPage /> },
+      { path: 'pertanian', element: <PertanianPage /> },
+      { path: 'umkm', element: <UmkmPage /> },
+      { path: 'infografis', element: <InfografisPage /> },
+      { path: 'nawasena', element: <NawasenaPage /> },
+      { path: 'kontak', element: <KontakPage /> },
+      { path: 'berita/:slug', element: <BeritaDetailPage /> },
+      { path: 'jadwal-tanam', element: <JadwalTanamPage /> },
     ],
   },
+
+  // ============ AREA PORTAL ADMIN (pemuda -- role: portal) ============
+  // Kelola konten publik: Berita, UMKM, Profil Desa. Kalau akun dgn
+  // role 'nawasena' coba masuk sini, ProtectedRouter otomatis lempar
+  // balik ke area Nawasena miliknya sendiri (bukan ditolak mentah2).
   {
-    path: '/dashboard',
-    element: <ProtectedRouter />,
+    path: '/portal-admin',
+    element: <ProtectedRouter allowedRoles={['portal']} />,
     children: [
       {
         element: <NawasenaLayout />,
         children: [
-          {
-            index: true,
-            element: <DashboardNawasenaPage />,
-          },
-          {
-            path: 'schedule',
-            element: <AdminSchedulePage />,
-          },
-          {
-            path: 'berita',
-            element: <AdminBeritaPage />,
-          },
-          {
-            path: 'umkm',
-            element: <AdminUmkmPage />,
-          },
-          {
-            path: 'harvest',
-            element: <AdminHarvestPage />,
-          },
-          {
-            path: 'village',
-            element: <AdminVillagePage />,
-          },
-          {
-            path: 'planting-schedule',
-            element: <AdminPlantingSchedulePage />,
-          },
-         
+          { index: true, element: <DashboardPortalPage /> },
+          { path: 'berita', element: <AdminBeritaPage /> },
+          { path: 'umkm', element: <AdminUmkmPage /> },
+          { path: 'village', element: <AdminVillagePage /> },
         ],
       },
     ],
   },
+
+  // ============ AREA NAWASENA ADMIN (tim teknologi -- role: nawasena) ============
+  // Kelola data teknis pertanian: Jadwal Tanam, Data Panen, Jadwal.
+  {
+    path: '/nawasena-admin',
+    element: <ProtectedRouter allowedRoles={['nawasena']} />,
+    children: [
+      {
+        element: <NawasenaLayout />,
+        children: [
+          { index: true, element: <DashboardNawasenaPage /> },
+          { path: 'schedule', element: <AdminSchedulePage /> },
+          { path: 'harvest', element: <AdminHarvestPage /> },
+          { path: 'planting-schedule', element: <AdminPlantingSchedulePage /> },
+        ],
+      },
+    ],
+  },
+
   {
     path: '/login',
     element: <LoginPage />,

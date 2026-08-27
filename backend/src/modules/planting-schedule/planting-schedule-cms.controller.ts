@@ -27,7 +27,6 @@ import { UpdateMusimTanamDto } from './dto/update-musim-tanam.dto';
 import { CreateTahapanDto } from './dto/create-tahapan.dto';
 import { UpdateTahapanDto } from './dto/update-tahapan.dto';
 
-// DTO inline untuk Komoditas (sederhana, tidak perlu file terpisah)
 class CreateKomoditasDto {
   @ApiProperty({ example: 'Padi', description: 'Nama komoditas' })
   @IsString()
@@ -42,14 +41,10 @@ class CreateKomoditasDto {
 @ApiTags('cms/planting-schedule')
 @ApiBearerAuth('access-token')
 @UseGuards(RolesGuard)
-@Roles('admin')
+@Roles('nawasena')
 @Controller('cms/planting-schedule')
 export class PlantingScheduleCmsController {
   constructor(private readonly service: PlantingScheduleService) {}
-
-  // ──────────────────────────────────────────────────────────
-  // MusimTanam
-  // ──────────────────────────────────────────────────────────
 
   @Get()
   @ApiOperation({
@@ -100,10 +95,6 @@ export class PlantingScheduleCmsController {
     return this.service.remove(id);
   }
 
-  // ──────────────────────────────────────────────────────────
-  // TahapanJadwal — CRUD per tahapan
-  // ──────────────────────────────────────────────────────────
-
   @Post(':musimTanamId/tahapan')
   @ApiOperation({
     summary: 'Tambah tahapan ke musim tanam',
@@ -127,10 +118,6 @@ export class PlantingScheduleCmsController {
   removeTahapan(@Param('id') id: string) {
     return this.service.removeTahapan(id);
   }
-
-  // ──────────────────────────────────────────────────────────
-  // Komoditas
-  // ──────────────────────────────────────────────────────────
 
   @Post('komoditas')
   @ApiOperation({ summary: 'Buat komoditas baru' })

@@ -19,7 +19,17 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles || requiredRoles.length === 0) return true;
 
     const { user } = context.switchToHttp().getRequest();
-    if (!user || !requiredRoles.includes(user.role)) {
+    if (!user) {
+      throw new ForbiddenException('Akses ditolak: belum login');
+    }
+
+    // 'admin' = superadmin, selalu lolos apa pun requiredRoles-nya --
+    // dipakai sbg akun cadangan/pemilik sistem yg bisa akses semua area
+    // (Portal maupun Nawasena), TERPISAH dari role spesifik 'portal'
+    // dan 'nawasena' yg masing2 cuma boleh akses areanya sendiri.
+    if (user.role === 'admin') return true;
+
+    if (!requiredRoles.includes(user.role)) {
       throw new ForbiddenException('Akses ditolak: role tidak mencukupi');
     }
     return true;

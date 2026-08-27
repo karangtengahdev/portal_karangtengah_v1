@@ -11,7 +11,7 @@ import { UpdateHarvestDto } from './dto/update-harvest.dto';
 @ApiTags('cms/harvest')
 @ApiBearerAuth('access-token')
 @UseGuards(RolesGuard)
-@Roles('admin')
+@Roles('nawasena')
 @Controller('cms/harvest')
 export class HarvestCmsController {
   constructor(private readonly harvestService: HarvestService) {}

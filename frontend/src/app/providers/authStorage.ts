@@ -5,6 +5,11 @@ export type AuthTokens = {
 
 export const ACCESS_TOKEN_KEY = 'accessToken';
 export const REFRESH_TOKEN_KEY = 'refreshToken';
+// Role disimpan TERPISAH dari token -- diisi setelah login berhasil,
+// dengan cara panggil /v1/auth/me (baca role dari JWT di sisi backend,
+// bukan didekode manual di frontend). Dipakai utk arahkan ke area
+// Portal/Nawasena yang sesuai & filter menu sidebar.
+export const USER_ROLE_KEY = 'userRole';
 
 const AUTH_STORAGE_EVENT = 'auth-storage-change';
 
@@ -12,6 +17,22 @@ export const getStoredAuthTokens = (): AuthTokens => ({
   accessToken: localStorage.getItem(ACCESS_TOKEN_KEY),
   refreshToken: localStorage.getItem(REFRESH_TOKEN_KEY),
 });
+
+export const getStoredUserRole = (): string | null =>
+  localStorage.getItem(USER_ROLE_KEY);
+
+export const setStoredUserRole = (role: string | null) => {
+  if (role) {
+    localStorage.setItem(USER_ROLE_KEY, role);
+  } else {
+    localStorage.removeItem(USER_ROLE_KEY);
+  }
+  window.dispatchEvent(
+    new CustomEvent(AUTH_STORAGE_EVENT, {
+      detail: { ...getStoredAuthTokens(), role: getStoredUserRole() },
+    }),
+  );
+};
 
 export const setStoredAuthTokens = ({
   accessToken,
@@ -39,6 +60,7 @@ export const setStoredAuthTokens = ({
 export const clearStoredAuthTokens = () => {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
+  localStorage.removeItem(USER_ROLE_KEY);
 
   window.dispatchEvent(
     new CustomEvent<AuthTokens>(AUTH_STORAGE_EVENT, {
@@ -59,6 +81,7 @@ export const subscribeAuthStorage = (listener: (tokens: AuthTokens) => void) => 
     if (
       event.key === ACCESS_TOKEN_KEY ||
       event.key === REFRESH_TOKEN_KEY ||
+      event.key === USER_ROLE_KEY ||
       event.key === null
     ) {
       listener(getStoredAuthTokens());

@@ -24,7 +24,7 @@ import { UpdateUmkmDto } from './dto/update-umkm.dto';
 @ApiTags('cms/umkm')
 @ApiBearerAuth('access-token')
 @UseGuards(RolesGuard)
-@Roles('admin')
+@Roles('portal')
 @Controller('cms/umkm')
 export class UmkmCmsController {
   constructor(

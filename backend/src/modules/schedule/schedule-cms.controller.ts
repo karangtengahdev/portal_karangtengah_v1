@@ -11,7 +11,7 @@ import { UpdateScheduleDto } from './dto/update-schedule.dto';
 @ApiTags('cms/schedule')
 @ApiBearerAuth('access-token')
 @UseGuards(RolesGuard)
-@Roles('admin')
+@Roles('nawasena')
 @Controller('cms/schedule')
 export class ScheduleCmsController {
   constructor(private readonly scheduleService: ScheduleService) {}

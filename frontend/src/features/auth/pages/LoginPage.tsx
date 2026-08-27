@@ -1,22 +1,11 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
-import { useAuth } from '../../../app/providers/AuthContext';
+import { getHomePathForRole, useAuth } from '../../../app/providers/AuthContext';
 import { FormLogin } from '../components/FormLogin';
 import { useAuthForm } from '../hooks/useAuthForm';
 
-type LoginLocationState = {
-  from?: {
-    pathname?: string;
-  };
-};
-
 export const LoginPage = () => {
-  const location = useLocation();
-  const { isAuthenticated } = useAuth();
-
-  const from =
-    (location.state as LoginLocationState | null)?.from?.pathname ?? '/dashboard';
-  const redirectTo = from === '/login' ? '/dashboard' : from;
+  const { isAuthenticated, role } = useAuth();
 
   const {
     email,
@@ -26,21 +15,15 @@ export const LoginPage = () => {
     isSubmitting,
     errorMessage,
     handleLogin,
-  } = useAuthForm(redirectTo);
+  } = useAuthForm();
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={getHomePathForRole(role)} replace />;
   }
 
   return (
     <main className="min-h-screen bg-neutral-50 px-4 py-8 text-neutral-950">
-      {/* max-w diperbesar (6xl -> 7xl) supaya kartu login punya ruang lebih
-          lega, tidak terasa mepet di layar besar */}
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl items-center justify-center">
-        {/* Grid disamakan proporsinya (dulu [1fr_420px] -- panel form
-            dipatok mati 420px, jadi kecil & terdesak ke pojok kanan
-            di layar lebar). Sekarang [1fr_1fr] -- form dapat ruang
-            SAMA BESAR dengan panel dekorasi, bukan cuma kolom sempit. */}
         <section className="grid w-full overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm lg:grid-cols-[1fr_1fr]">
           <div className="hidden bg-[linear-gradient(135deg,#166534_0%,#0f766e_45%,#0369a1_100%)] p-10 text-white lg:flex lg:flex-col lg:justify-between">
             <div>

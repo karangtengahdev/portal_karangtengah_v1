@@ -14,7 +14,7 @@ import { CreateGalleryDto } from './dto/gallery.dto';
 @ApiTags('cms/village')
 @ApiBearerAuth('access-token')
 @UseGuards(RolesGuard)
-@Roles('admin')
+@Roles('portal')
 @Controller('cms/village')
 export class VillageCmsController {
   constructor(

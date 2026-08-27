@@ -2,11 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { createClient } from '@supabase/supabase-js';
 
 // PENTING: PrismaClient dibuat DULUAN -- ini yang men-trigger Prisma
-// otomatis load file .env (perilaku bawaan generated client Prisma).
-// Setelah baris ini jalan, process.env.SUPABASE_URL dkk sudah terisi,
-// makanya createClient() di bawah bisa langsung pakai process.env
-// tanpa perlu import dotenv secara eksplisit (sama seperti seed.ts
-// lain di project ini yang juga tidak import dotenv).
+// otomatis load file .env. Lihat catatan sama di versi sebelumnya file
+// ini kenapa urutan ini penting.
 const prisma = new PrismaClient();
 
 const supabaseAdmin = createClient(
@@ -14,63 +11,69 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
-// Kredensial ini SAMA PERSIS dengan default yang sudah diasumsikan di
-// frontend (lihat useAuthForm.ts) dan contoh di openapi.json -- supaya
-// begitu di-seed, login langsung bisa dicoba tanpa ubah kode apa pun.
-const ADMIN_EMAIL = 'admin@nawasena.id';
-const ADMIN_PASSWORD = 'admin1234';
-const ADMIN_NAME = 'Admin NAWASENA';
+// Tiga akun terpisah sesuai pembagian area:
+//  - admin     : superadmin cadangan, bisa akses SEMUA area (lihat
+//                RolesGuard -- role 'admin' selalu lolos apa pun
+//                requiredRoles-nya). Simpan baik-baik, jangan dibagi
+//                ke tim biasa.
+//  - portal    : untuk PEMUDA -- kelola Berita, UMKM, Profil Desa.
+//  - nawasena  : untuk TIM TEKNOLOGI -- kelola Jadwal Tanam, Data
+//                Panen, Jadwal.
+const ACCOUNTS = [
+  { email: 'admin@nawasena.id', password: 'admin1234', name: 'Superadmin', role: 'admin' },
+  { email: 'portal@nawasena.id', password: 'portal1234', name: 'Admin Portal', role: 'portal' },
+  { email: 'nawasena@nawasena.id', password: 'nawasena1234', name: 'Tim Teknologi', role: 'nawasena' },
+];
 
-async function main() {
-  console.log('Seeding user admin...');
-
-  // 1. Cek dulu apakah user ini sudah ada di Supabase Auth (supaya
-  //    script ini aman dijalankan berkali-kali, tidak duplikat/error).
+async function seedOneAccount(acc: (typeof ACCOUNTS)[number]) {
   const { data: existingUsers, error: listError } =
     await supabaseAdmin.auth.admin.listUsers();
   if (listError) throw listError;
 
-  let authUser = existingUsers.users.find((u) => u.email === ADMIN_EMAIL);
+  let authUser = existingUsers.users.find((u) => u.email === acc.email);
 
   if (!authUser) {
-    // 2. Buat user BARU di Supabase Auth. PENTING: role disimpan di
-    //    app_metadata (BUKAN user_metadata) -- jwt.strategy.ts baca
-    //    role admin/operator spesifik dari app_metadata.role.
     const { data, error } = await supabaseAdmin.auth.admin.createUser({
-      email: ADMIN_EMAIL,
-      password: ADMIN_PASSWORD,
-      email_confirm: true, // langsung terverifikasi, tidak perlu klik link email
-      app_metadata: { role: 'admin' },
-      user_metadata: { full_name: ADMIN_NAME },
+      email: acc.email,
+      password: acc.password,
+      email_confirm: true,
+      app_metadata: { role: acc.role },
+      user_metadata: { full_name: acc.name },
     });
     if (error) throw error;
     authUser = data.user;
-    console.log(`  + Auth user dibuat: ${ADMIN_EMAIL}`);
+    console.log(`  + Auth user dibuat: ${acc.email} (role: ${acc.role})`);
   } else {
-    console.log(`  = Auth user sudah ada: ${ADMIN_EMAIL}`);
-    // Pastikan tetap role admin walau usernya sudah ada dari sebelumnya
+    console.log(`  = Auth user sudah ada: ${acc.email}`);
     await supabaseAdmin.auth.admin.updateUserById(authUser.id, {
-      app_metadata: { role: 'admin' },
+      app_metadata: { role: acc.role },
     });
   }
 
-  // 3. Sinkronkan/upsert ke tabel profiles (Prisma) -- ini yang
-  //    dibaca aplikasi untuk data non-auth (fullName, dll).
   await prisma.profile.upsert({
     where: { id: authUser.id },
-    update: { email: ADMIN_EMAIL, fullName: ADMIN_NAME, role: 'admin' },
+    update: { email: acc.email, fullName: acc.name, role: acc.role },
     create: {
       id: authUser.id,
-      email: ADMIN_EMAIL,
-      fullName: ADMIN_NAME,
-      role: 'admin',
+      email: acc.email,
+      fullName: acc.name,
+      role: acc.role,
     },
   });
-  console.log('  + Profile tersinkron di database.');
+  console.log(`  + Profile tersinkron: ${acc.email}`);
+}
 
-  console.log('\nSeed user admin selesai. Kredensial login:');
-  console.log(`  Email    : ${ADMIN_EMAIL}`);
-  console.log(`  Password : ${ADMIN_PASSWORD}`);
+async function main() {
+  console.log('Seeding 3 akun (admin, portal, nawasena)...\n');
+
+  for (const acc of ACCOUNTS) {
+    await seedOneAccount(acc);
+  }
+
+  console.log('\nSeed selesai. Kredensial login:');
+  for (const acc of ACCOUNTS) {
+    console.log(`  [${acc.role.padEnd(8)}] ${acc.email} / ${acc.password}`);
+  }
 }
 
 main()

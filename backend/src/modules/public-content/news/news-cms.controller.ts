@@ -26,7 +26,7 @@ import { UpdateNewsDto } from './dto/update-news.dto';
 @ApiTags('cms/news')
 @ApiBearerAuth('access-token')
 @UseGuards(RolesGuard)
-@Roles('admin')
+@Roles('portal')
 @Controller('cms/news')
 export class NewsCmsController {
   constructor(

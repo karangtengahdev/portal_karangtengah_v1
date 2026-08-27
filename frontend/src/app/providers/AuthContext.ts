@@ -4,8 +4,9 @@ export interface AuthContextType {
   accessToken: string | null;
   refreshToken: string | null;
   token: string | null;
+  role: string | null;
   isAuthenticated: boolean;
-  login: (accessToken: string, refreshToken?: string | null) => void;
+  login: (accessToken: string, refreshToken?: string | null, role?: string | null) => void;
   logout: () => void;
 }
 
@@ -19,4 +20,13 @@ export const useAuth = () => {
   }
 
   return context;
+};
+
+// Halaman utama tiap area, dipakai utk redirect setelah login &
+// sebagai fallback kalau role tidak dikenali.
+export const getHomePathForRole = (role: string | null): string => {
+  if (role === 'portal') return '/portal-admin';
+  if (role === 'nawasena') return '/nawasena-admin';
+  if (role === 'admin') return '/nawasena-admin'; // superadmin: default ke Nawasena
+  return '/login';
 };

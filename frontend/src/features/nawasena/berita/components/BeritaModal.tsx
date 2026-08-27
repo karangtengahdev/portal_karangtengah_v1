@@ -3,6 +3,7 @@ import { Modal, TextInput, Textarea, Select, Button, Group, Stack, FileInput, Di
 import { IconNews, IconPhoto, IconWriting } from '@tabler/icons-react';
 import type { BeritaItem, BeritaPayload } from '../types/berita';
 import { BERITA_CATEGORIES } from '../types/berita';
+import { BeritaRichEditor } from './BeritaRichEditor';
 
 type BeritaModalProps = {
   opened: boolean;
@@ -111,14 +112,10 @@ export const BeritaModal = ({ opened, onClose, onSubmit, initialData, isSubmitti
               <IconWriting size={14} /> Isi Berita
             </p>
             <Divider mt={6} mb="sm" color="#EDEAE0" />
-            <Textarea
-              placeholder="Tulis isi lengkap berita di sini..."
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              autosize
-              minRows={8}
-              required
-            />
+            {/* Editor interaktif: tebal/miring/garis bawah, heading,
+                list, kutipan, link, DAN sisip gambar langsung di dalam
+                isi (bukan cuma cover) -- lihat BeritaRichEditor.tsx */}
+            <BeritaRichEditor value={content} onChange={setContent} />
           </div>
 
           <div className="rounded-lg border border-[#D9A441]/40 bg-[#D9A441]/10 p-4">

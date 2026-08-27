@@ -72,6 +72,21 @@ export class NewsCmsController {
     return this.newsService.setCover(id, result.url);
   }
 
+  // Upload gambar utk DISISIPKAN DI DALAM isi berita (rich text editor) --
+  // TERPISAH dari cover, tidak terikat ke satu id berita tertentu (dipakai
+  // berkali-kali per artikel, bahkan sebelum artikelnya sendiri dibuat --
+  // penulis bisa sisipkan gambar sambil masih mengetik draft).
+  @Post('upload-image')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadInlineImage(@UploadedFile() file: any) {
+    const ext = (file.originalname.split('.').pop() || 'jpg').toLowerCase();
+    const nama = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const dest = `news/content/${nama}`;
+    const result = await this.storage.upload(file.buffer, dest, file.mimetype);
+    return { url: result.url };
+  }
+
   @Patch(':id/publish')
   publish(@Param('id') id: string, @Body('publish') publish: boolean) {
     return this.newsService.publish(id, publish ?? true);

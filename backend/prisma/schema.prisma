@@ -170,13 +170,22 @@ model News {
   excerpt     String?
   content     String
   coverUrl    String?   @map("cover_url")
+  // Kategori tampilan (mis. "Kegiatan", "Pengumuman") -- teks bebas,
+  // dipilih dari daftar tetap di form admin (lihat BERITA_CATEGORIES
+  // di frontend), bukan tabel referensi terpisah.
+  category    String?
+  // Nama byline yang TAMPIL PUBLIK (mis. "Tim Redaksi") -- SENGAJA
+  // terpisah dari authorId di bawah. authorId = akun admin yang login
+  // saat membuat (untuk audit internal), author = nama yang mau
+  // ditampilkan ke pembaca, tidak harus sama & tidak perlu akun asli.
+  author      String?
   status      String    @default("draft") // draft | published
   publishedAt DateTime? @map("published_at") @db.Timestamptz
   authorId    String?   @map("author_id") @db.Uuid
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
-  author Profile? @relation(fields: [authorId], references: [id])
+  authorProfile Profile? @relation(fields: [authorId], references: [id])
 
   @@index([status, publishedAt])
   @@map("news")

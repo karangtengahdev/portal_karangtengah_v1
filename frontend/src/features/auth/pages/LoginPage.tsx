@@ -19,7 +19,7 @@ export const LoginPage = () => {
   const redirectTo = from === '/login' ? '/dashboard' : from;
 
   const {
-    email, // Ambil email dari hooks
+    email,
     setEmail,
     password,
     setPassword,
@@ -34,8 +34,14 @@ export const LoginPage = () => {
 
   return (
     <main className="min-h-screen bg-neutral-50 px-4 py-8 text-neutral-950">
-      <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center justify-center">
-        <section className="grid w-full overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm lg:grid-cols-[1fr_420px]">
+      {/* max-w diperbesar (6xl -> 7xl) supaya kartu login punya ruang lebih
+          lega, tidak terasa mepet di layar besar */}
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl items-center justify-center">
+        {/* Grid disamakan proporsinya (dulu [1fr_420px] -- panel form
+            dipatok mati 420px, jadi kecil & terdesak ke pojok kanan
+            di layar lebar). Sekarang [1fr_1fr] -- form dapat ruang
+            SAMA BESAR dengan panel dekorasi, bukan cuma kolom sempit. */}
+        <section className="grid w-full overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm lg:grid-cols-[1fr_1fr]">
           <div className="hidden bg-[linear-gradient(135deg,#166534_0%,#0f766e_45%,#0369a1_100%)] p-10 text-white lg:flex lg:flex-col lg:justify-between">
             <div>
               <p className="text-sm font-medium uppercase tracking-[0.18em] text-emerald-100">
@@ -66,9 +72,9 @@ export const LoginPage = () => {
             isSubmitting={isSubmitting}
             onPasswordChange={setPassword}
             onSubmit={handleLogin}
-            onEmailChange={setEmail} // Pasing setEmail ke komponen
+            onEmailChange={setEmail}
             password={password}
-            email={email} // Pasing email ke komponen
+            email={email}
           />
         </section>
       </div>

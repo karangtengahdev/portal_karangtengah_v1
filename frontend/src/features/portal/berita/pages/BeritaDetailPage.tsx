@@ -87,16 +87,26 @@ export const BeritaDetailPage = () => {
           />
         </div>
 
-        {/* Isi Konten Berita */}
+        {/* Ringkasan (lead paragraph) -- ditampilkan terpisah, LEBIH TEBAL,
+            di atas isi lengkap. Ini beda dari isi lengkap (content) di
+            bawahnya -- sebelumnya excerpt ini yang KELIRU dipakai sebagai
+            satu-satunya isi artikel. */}
+        {berita.excerpt && (
+          <p className="mb-6 text-lg font-semibold leading-relaxed text-[#1C2620]">
+            {berita.excerpt}
+          </p>
+        )}
+
+        {/* Isi Konten Berita LENGKAP -- ini yang sebelumnya hilang/salah
+            tampil. Backend simpan sebagai HTML/markdown (lihat README),
+            jadi tetap pakai dangerouslySetInnerHTML, tapi sumbernya
+            SEKARANG content, bukan excerpt. */}
         <article className="prose prose-lg max-w-none text-[#3d453b] prose-p:leading-relaxed prose-headings:text-[#101708] prose-a:text-[#4f842f]">
-          {/* Gunakan dangerouslySetInnerHTML JIKA backend mengirim teks HTML (seperti dari text editor CMS). 
-            Jika hanya string biasa, hapus dangerouslySetInnerHTML dan gunakan {berita.content} di dalam tag <p>.
-          */}
-          {berita.excerpt ? (
-            <div dangerouslySetInnerHTML={{ __html: berita.excerpt }} />
+          {berita.content ? (
+            <div dangerouslySetInnerHTML={{ __html: berita.content }} />
           ) : (
             <p className="whitespace-pre-line leading-loose text-lg">
-              {berita.excerpt || 'Belum ada konten untuk berita ini.'}
+              Belum ada konten untuk berita ini.
             </p>
           )}
         </article>

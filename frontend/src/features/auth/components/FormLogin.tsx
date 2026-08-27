@@ -23,28 +23,33 @@ export const FormLogin = ({
   onSubmit,
 }: FormLoginProps) => {
   return (
-    <Paper className="flex h-full flex-col justify-center p-6 sm:p-10 font-['Plus_Jakarta_Sans']" radius={0} bg="transparent">
-      <div className="mx-auto w-full max-w-sm">
-        {/* Brand mark */}
-        <div className="mb-8 flex flex-col items-start">
-          <div className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-[#1F4A34]/10 text-[#1F4A34]">
-            <IconSeeding size={24} stroke={1.6} />
+    // Padding diperbesar (p-10 -> p-12/p-14) supaya form terasa lebih
+    // lega, sejalan dengan kolom yang sekarang sudah lebih lebar.
+    <Paper className="flex h-full flex-col justify-center p-6 sm:p-12 lg:p-14 font-['Plus_Jakarta_Sans']" radius={0} bg="transparent">
+      {/* max-w-sm (384px) -> max-w-md (448px): form jadi lebih besar
+          secara nyata, bukan cuma kolom luarnya yang lebar sementara
+          isinya tetap kecil di tengah. */}
+      <div className="mx-auto w-full max-w-md">
+        {/* Brand mark -- ikon & teks sedikit diperbesar mengikuti skala baru */}
+        <div className="mb-9 flex flex-col items-start">
+          <div className="mb-4 grid h-14 w-14 place-items-center rounded-xl bg-[#1F4A34]/10 text-[#1F4A34]">
+            <IconSeeding size={28} stroke={1.6} />
           </div>
           <Text size="sm" fw={600} tt="uppercase" style={{ letterSpacing: '0.18em' }} c="#8A5A3B">
             Dashboard Desa
           </Text>
-          <Title order={2} mt={6} c="#1C2620" fw={700}>
+          <Title order={2} mt={8} c="#1C2620" fw={700} size="28px">
             Selamat Datang Kembali
           </Title>
-          <div className="mt-3 h-[3px] w-12 rounded-full bg-[#D9A441]" />
+          <div className="mt-3 h-[3px] w-14 rounded-full bg-[#D9A441]" />
           <Text size="sm" mt="sm" c="dimmed">
             Masuk untuk mengelola data desa, panen, UMKM, dan berita.
           </Text>
         </div>
 
-        {/* Elegant card wrapper for the fields */}
-        <div className="rounded-2xl border border-neutral-200/80 bg-white/70 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm sm:p-7">
-          <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        {/* Card field -- padding diperbesar (p-6/p-7 -> p-7/p-8) */}
+        <div className="rounded-2xl border border-neutral-200/80 bg-white/70 p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm sm:p-8">
+          <form onSubmit={onSubmit} className="flex flex-col gap-5">
             <TextInput
               label="Email"
               placeholder="Masukkan email Anda"
@@ -53,7 +58,7 @@ export const FormLogin = ({
               onChange={(event) => onEmailChange(event.currentTarget.value)}
               type="email"
               required
-              size="md"
+              size="lg"
               radius="md"
               styles={{
                 label: { fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#8A5A3B', marginBottom: 6 },
@@ -69,7 +74,7 @@ export const FormLogin = ({
               value={password}
               onChange={(event) => onPasswordChange(event.currentTarget.value)}
               required
-              size="md"
+              size="lg"
               radius="md"
               styles={{
                 label: { fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#8A5A3B', marginBottom: 6 },
@@ -99,7 +104,7 @@ export const FormLogin = ({
               type="submit"
               loading={isSubmitting}
               rightSection={<IconArrowRight size={18} />}
-              size="md"
+              size="lg"
               radius="md"
               mt="sm"
               fullWidth
@@ -110,13 +115,12 @@ export const FormLogin = ({
           </form>
         </div>
 
-        {/* Back to dashboard: real link, not a fake button inside the form */}
         <Button
           component={Link}
           to="/"
           variant="subtle"
           leftSection={<IconArrowLeft size={16} />}
-          size="sm"
+          size="md"
           radius="md"
           mt="lg"
           fullWidth

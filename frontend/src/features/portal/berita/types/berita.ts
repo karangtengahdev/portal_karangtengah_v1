@@ -3,9 +3,10 @@ export type PublicBeritaItem = {
   title: string;
   slug: string;
   excerpt: string | null;
+  content: string;
   coverUrl: string | null;
   publishedAt: string;
-  
+
   category?: string;
   views?: number;
   author?: string;

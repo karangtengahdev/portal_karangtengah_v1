@@ -594,7 +594,7 @@ export const DashboardPage = () => {
                 Artikel dan Berita
               </p>
               <h2 className="mt-3 text-2xl font-bold leading-tight text-[#212529] sm:text-4xl">
-                Kabarkarang Tengah terkini
+                Kabar Karangtengah terkini
               </h2>
             </div>
             <Link

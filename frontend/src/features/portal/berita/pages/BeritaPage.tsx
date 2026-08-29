@@ -78,7 +78,7 @@ export const BeritaPage = () => {
               Berita Desa
             </p>
             <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-[0.2px] text-[#12351F] sm:text-5xl lg:text-[58px] lg:leading-[1.06]">
-              Kabar terbaru Karang Tengah.
+              Kabar terbaru Karangtengah.
             </h1>
             <p className="mt-5 max-w-xl text-sm leading-7 text-[#555555] sm:text-base">
               Informasi resmi seputar pemerintahan, layanan warga, pertanian,

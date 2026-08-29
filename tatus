@@ -1,0 +1,73 @@
+[1mdiff --git a/frontend/index.html b/frontend/index.html[m
+[1mindex bdca247..c84361d 100644[m
+[1m--- a/frontend/index.html[m
+[1m+++ b/frontend/index.html[m
+[36m@@ -2,9 +2,9 @@[m
+ <html lang="en">[m
+   <head>[m
+     <meta charset="UTF-8" />[m
+[31m-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />[m
+[32m+[m[32m    <link rel="icon" type="image/svg+xml" href="/karteng.png" />[m
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />[m
+[31m-    <title>Padukuhan Karangtengah</title>[m
+[32m+[m[32m    <title>Karangtengah</title>[m
+   </head>[m
+   <body>[m
+     <div id="root"></div>[m
+[1mdiff --git a/frontend/src/features/portal/berita/pages/BeritaPage.tsx b/frontend/src/features/portal/berita/pages/BeritaPage.tsx[m
+[1mindex 1148c28..f7252c5 100644[m
+[1m--- a/frontend/src/features/portal/berita/pages/BeritaPage.tsx[m
+[1m+++ b/frontend/src/features/portal/berita/pages/BeritaPage.tsx[m
+[36m@@ -78,7 +78,7 @@[m [mexport const BeritaPage = () => {[m
+               Berita Desa[m
+             </p>[m
+             <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-[0.2px] text-[#12351F] sm:text-5xl lg:text-[58px] lg:leading-[1.06]">[m
+[31m-              Kabar terbaru Karang Tengah.[m
+[32m+[m[32m              Kabar terbaru Karangtengah.[m
+             </h1>[m
+             <p className="mt-5 max-w-xl text-sm leading-7 text-[#555555] sm:text-base">[m
+               Informasi resmi seputar pemerintahan, layanan warga, pertanian,[m
+[1mdiff --git a/frontend/src/features/portal/dashboard/pages/DashboardPage.tsx b/frontend/src/features/portal/dashboard/pages/DashboardPage.tsx[m
+[1mindex b35196b..b25ba86 100644[m
+[1m--- a/frontend/src/features/portal/dashboard/pages/DashboardPage.tsx[m
+[1m+++ b/frontend/src/features/portal/dashboard/pages/DashboardPage.tsx[m
+[36m@@ -93,7 +93,7 @@[m [mconst serviceCards = [[m
+     number: '04',[m
+     title: 'UMKM Lokal',[m
+     detail:[m
+[31m-      'Etalase produk warga, profil usaha, dan kontak pelaku UMKM Karang Tengah untuk promosi lokal.',[m
+[32m+[m[32m      'Etalase produk warga, profil usaha, dan kontak pelaku UMKM Karangtengah untuk promosi lokal.',[m
+     image: layananUmkmImage,[m
+     imageAlt: 'Produk dan pasar lokal untuk direktori UMKM Karang Tengah',[m
+     imageClassName: 'object-center',[m
+[36m@@ -327,7 +327,7 @@[m [mexport const DashboardPage = () => {[m
+         <div className="village-stats-wrap">[m
+           <section aria-labelledby="village-stats-title" className="village-stats-panel">[m
+             <div className="village-stats-heading">[m
+[31m-              <h2 id="village-stats-title">Karang Tengah Dalam Angka</h2>[m
+[32m+[m[32m              <h2 id="village-stats-title">Karangtengah Dalam Angka</h2>[m
+               <div aria-hidden="true" className="village-stats-title-mark">[m
+                 <span />[m
+                 <IconLeaf size={16} stroke={1.7} />[m
+[36m@@ -594,7 +594,7 @@[m [mexport const DashboardPage = () => {[m
+                 Artikel dan Berita[m
+               </p>[m
+               <h2 className="mt-3 text-2xl font-bold leading-tight text-[#212529] sm:text-4xl">[m
+[31m-                Kabar Karang Tengah terkini[m
+[32m+[m[32m                Kabarkarang Tengah terkini[m
+               </h2>[m
+             </div>[m
+             <Link[m
+[1mdiff --git a/frontend/src/shared/components/layout/PortalFooter.tsx b/frontend/src/shared/components/layout/PortalFooter.tsx[m
+[1mindex f70749f..cced8d8 100644[m
+[1m--- a/frontend/src/shared/components/layout/PortalFooter.tsx[m
+[1m+++ b/frontend/src/shared/components/layout/PortalFooter.tsx[m
+[36m@@ -49,7 +49,7 @@[m [mexport const PortalFooter = ({[m
+   links = defaultLinks,[m
+   services = defaultServices,[m
+   heading = 'Butuh informasi atau layanan desa?',[m
+[31m-  subheading = 'Hubungi Karang Tengah',[m
+[32m+[m[32m  subheading = 'Hubungi Karangtengah',[m
+   ctaLabel = 'Hubungi Desa',[m
+   ctaTo = '/kontak',[m
+   address = 'Kantor Desa Karang Tengah, Imogiri, Bantul',[m

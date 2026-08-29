@@ -93,7 +93,7 @@ const serviceCards = [
     number: '04',
     title: 'UMKM Lokal',
     detail:
-      'Etalase produk warga, profil usaha, dan kontak pelaku UMKM Karang Tengah untuk promosi lokal.',
+      'Etalase produk warga, profil usaha, dan kontak pelaku UMKM Karangtengah untuk promosi lokal.',
     image: layananUmkmImage,
     imageAlt: 'Produk dan pasar lokal untuk direktori UMKM Karang Tengah',
     imageClassName: 'object-center',
@@ -327,7 +327,7 @@ export const DashboardPage = () => {
         <div className="village-stats-wrap">
           <section aria-labelledby="village-stats-title" className="village-stats-panel">
             <div className="village-stats-heading">
-              <h2 id="village-stats-title">Karang Tengah Dalam Angka</h2>
+              <h2 id="village-stats-title">Karangtengah Dalam Angka</h2>
               <div aria-hidden="true" className="village-stats-title-mark">
                 <span />
                 <IconLeaf size={16} stroke={1.7} />
@@ -594,7 +594,7 @@ export const DashboardPage = () => {
                 Artikel dan Berita
               </p>
               <h2 className="mt-3 text-2xl font-bold leading-tight text-[#212529] sm:text-4xl">
-                Kabar Karang Tengah terkini
+                Kabarkarang Tengah terkini
               </h2>
             </div>
             <Link

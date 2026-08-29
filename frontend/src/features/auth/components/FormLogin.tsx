@@ -1,5 +1,20 @@
-import { TextInput, PasswordInput, Button, Alert, Paper, Text, Title, Divider } from '@mantine/core';
-import { IconArrowLeft, IconArrowRight, IconLock, IconMail, IconAlertCircle, IconSeeding } from '@tabler/icons-react';
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Alert,
+  Text,
+  Title,
+  Divider,
+} from '@mantine/core';
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconLock,
+  IconMail,
+  IconAlertCircle,
+  IconSeeding,
+} from '@tabler/icons-react';
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -23,37 +38,88 @@ export const FormLogin = ({
   onSubmit,
 }: FormLoginProps) => {
   return (
-    // Padding diperbesar (p-10 -> p-12/p-14) supaya form terasa lebih
-    // lega, sejalan dengan kolom yang sekarang sudah lebih lebar.
-    <Paper className="flex h-full flex-col justify-center p-6 sm:p-12 lg:p-14 font-['Plus_Jakarta_Sans']" radius={0} bg="transparent">
-      {/* max-w-sm (384px) -> max-w-md (448px): form jadi lebih besar
-          secara nyata, bukan cuma kolom luarnya yang lebar sementara
-          isinya tetap kecil di tengah. */}
-      <div className="mx-auto w-full max-w-md">
-        {/* Brand mark -- ikon & teks sedikit diperbesar mengikuti skala baru */}
-        <div className="mb-9 flex flex-col items-start">
-          <div className="mb-4 grid h-14 w-14 place-items-center rounded-xl bg-[#1F4A34]/10 text-[#1F4A34]">
-            <IconSeeding size={28} stroke={1.6} />
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        padding: 'clamp(28px, 5vw, 56px) clamp(24px, 4vw, 56px)',
+        fontFamily:
+          "'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui, sans-serif",
+        background: '#ffffff',
+      }}
+    >
+      <div style={{ maxWidth: '420px', width: '100%', margin: '0 auto' }}>
+        {/* Brand mark */}
+        <div style={{ marginBottom: '36px' }}>
+          <div
+            style={{
+              width: '56px',
+              height: '56px',
+              display: 'grid',
+              placeItems: 'center',
+              borderRadius: '16px',
+              background: 'rgba(31, 74, 52, 0.08)',
+              color: '#1F4A34',
+              marginBottom: '20px',
+            }}
+          >
+            <IconSeeding size={26} stroke={1.6} />
           </div>
-          <Text size="sm" fw={600} tt="uppercase" style={{ letterSpacing: '0.18em' }} c="#8A5A3B">
+          <Text
+            size="sm"
+            fw={600}
+            tt="uppercase"
+            style={{ letterSpacing: '0.18em', color: '#8A5A3B' }}
+          >
             Dashboard Desa
           </Text>
-          <Title order={2} mt={8} c="#1C2620" fw={700} size="28px">
+          <Title
+            order={2}
+            mt={8}
+            style={{
+              color: '#1C2620',
+              fontWeight: 700,
+              fontSize: '26px',
+              lineHeight: 1.2,
+            }}
+          >
             Selamat Datang Kembali
           </Title>
-          <div className="mt-3 h-[3px] w-14 rounded-full bg-[#D9A441]" />
+          <div
+            style={{
+              marginTop: '12px',
+              height: '3px',
+              width: '56px',
+              borderRadius: '999px',
+              background: '#D9A441',
+            }}
+          />
           <Text size="sm" mt="sm" c="dimmed">
             Masuk untuk mengelola data desa, panen, UMKM, dan berita.
           </Text>
         </div>
 
-        {/* Card field -- padding diperbesar (p-6/p-7 -> p-7/p-8) */}
-        <div className="rounded-2xl border border-neutral-200/80 bg-white/70 p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm sm:p-8">
-          <form onSubmit={onSubmit} className="flex flex-col gap-5">
+        {/* Form card */}
+        <div
+          style={{
+            borderRadius: '20px',
+            border: '1px solid rgba(31, 74, 52, 0.08)',
+            background: 'rgba(248, 250, 245, 0.6)',
+            padding: 'clamp(24px, 3vw, 32px)',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.03)',
+          }}
+        >
+          <form
+            onSubmit={onSubmit}
+            style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+          >
             <TextInput
               label="Email"
               placeholder="Masukkan email Anda"
-              leftSection={<IconMail size={18} className="text-neutral-400" />}
+              leftSection={
+                <IconMail size={18} style={{ color: '#9ca3af' }} />
+              }
               value={email}
               onChange={(event) => onEmailChange(event.currentTarget.value)}
               type="email"
@@ -61,26 +127,48 @@ export const FormLogin = ({
               size="lg"
               radius="md"
               styles={{
-                label: { fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#8A5A3B', marginBottom: 6 },
-                input: { borderColor: '#E5E1D6' },
+                label: {
+                  fontSize: 12,
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  color: '#8A5A3B',
+                  marginBottom: 6,
+                },
+                input: {
+                  borderColor: '#E5E1D6',
+                  transition: 'border-color 0.2s ease',
+                },
               }}
-              classNames={{ input: 'focus:border-[#1F4A34]' }}
             />
 
             <PasswordInput
               label="Password"
               placeholder="Masukkan password Anda"
-              leftSection={<IconLock size={18} className="text-neutral-400" />}
+              leftSection={
+                <IconLock size={18} style={{ color: '#9ca3af' }} />
+              }
               value={password}
-              onChange={(event) => onPasswordChange(event.currentTarget.value)}
+              onChange={(event) =>
+                onPasswordChange(event.currentTarget.value)
+              }
               required
               size="lg"
               radius="md"
               styles={{
-                label: { fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#8A5A3B', marginBottom: 6 },
-                input: { borderColor: '#E5E1D6' },
+                label: {
+                  fontSize: 12,
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  color: '#8A5A3B',
+                  marginBottom: 6,
+                },
+                input: {
+                  borderColor: '#E5E1D6',
+                  transition: 'border-color 0.2s ease',
+                },
               }}
-              classNames={{ input: 'focus:border-[#1F4A34]' }}
             />
 
             {errorMessage && (
@@ -90,7 +178,10 @@ export const FormLogin = ({
                 variant="light"
                 radius="md"
                 styles={{
-                  root: { backgroundColor: 'rgba(193,80,46,0.08)', borderColor: 'rgba(193,80,46,0.25)' },
+                  root: {
+                    backgroundColor: 'rgba(193,80,46,0.08)',
+                    borderColor: 'rgba(193,80,46,0.25)',
+                  },
                   title: { color: '#C1502E' },
                   body: { color: '#8A5A3B' },
                   icon: { color: '#C1502E' },
@@ -108,7 +199,12 @@ export const FormLogin = ({
               radius="md"
               mt="sm"
               fullWidth
-              styles={{ root: { backgroundColor: '#1F4A34', '&:hover': { backgroundColor: '#173a29' } } }}
+              styles={{
+                root: {
+                  backgroundColor: '#1F4A34',
+                  transition: 'all 0.2s ease',
+                },
+              }}
             >
               Masuk
             </Button>
@@ -131,9 +227,10 @@ export const FormLogin = ({
 
         <Divider mt="xl" mb="md" color="#EDEAE0" />
         <Text size="xs" ta="center" c="dimmed">
-          &copy; {new Date().getFullYear()} Portal Desa &middot; Studyblog Is The Best
+          &copy; {new Date().getFullYear()} Portal Desa &middot; Studyblog Is
+          The Best
         </Text>
       </div>
-    </Paper>
+    </div>
   );
 };

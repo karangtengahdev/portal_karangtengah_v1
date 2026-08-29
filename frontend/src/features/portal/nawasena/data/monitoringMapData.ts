@@ -229,4 +229,25 @@ export const heatPoints: HeatPoint[] = [
   },
 ];
 
+export type RoverPoint = {
+  lat: number;
+  lng: number;
+  heading: number;
+  sats: number;
+  gpsFix: boolean;
+  status: string;
+};
+
+export const dummyRoverPoint: RoverPoint = {
+  lat: robot.position[0],   // -7.939419
+  lng: robot.position[1],   // 110.379267
+  heading: robot.heading,   // 45
+  sats: 8,
+  gpsFix: true,
+  status: 'Standby (dummy)',
+};
+
 export const hourlyDetections = [2, 4, 3, 5, 4, 6, 4, 5, 7, 10, 12, 16, 22, 27, 24, 19, 16, 13, 9, 7, 5, 4, 3, 2];
+
+
+

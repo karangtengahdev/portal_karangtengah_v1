@@ -3,7 +3,7 @@ import { IconMinus, IconPlus, IconTarget } from '@tabler/icons-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import { mapConfig } from '../data/monitoringMapData';
+import { dummyRoverPoint, mapConfig } from '../data/monitoringMapData';
 import { useRoverTrack } from '../hooks/useRoverTrack';
 
 const MAX_ZOOM = 19;
@@ -39,6 +39,14 @@ export const MonitoringMap = ({ fullBleed = false }: { fullBleed?: boolean }) =>
   const robotMarkerRef = useRef<L.Marker | null>(null);
 
   const { latestPoint, isLoading, isError } = useRoverTrack(ROVER_DEVICE_ID);
+
+  // Kalau data live dari database/API belum ada (null/undefined),
+  // pakai posisi dummy supaya peta & marker tidak kosong.
+  // Begitu latestPoint terisi (data DB berhasil di-fetch), ini otomatis
+  // dipakai karena nullish coalescing hanya jatuh ke fallback saat
+  // latestPoint benar-benar null/undefined.
+  const point = latestPoint ?? dummyRoverPoint;
+  const isUsingDummy = !latestPoint;
 
   // Init peta sekali saja
   useEffect(() => {
@@ -87,25 +95,27 @@ export const MonitoringMap = ({ fullBleed = false }: { fullBleed?: boolean }) =>
     };
   }, []);
 
-  // Update / buat marker tiap kali data baru dari API datang
+  // Update / buat marker tiap kali "point" berubah.
+  // "point" ini sumbernya bisa dari data live (latestPoint) kalau sudah
+  // tersedia, atau dari dummyRoverPoint kalau data live belum ada.
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !latestPoint) {
+    if (!map) {
       return;
     }
 
-    const position: L.LatLngExpression = [latestPoint.lat, latestPoint.lng];
+    const position: L.LatLngExpression = [point.lat, point.lng];
     const tooltipHtml = createRobotTooltip(
-      latestPoint.lat,
-      latestPoint.lng,
-      latestPoint.heading,
-      latestPoint.sats,
-      latestPoint.gpsFix,
+      point.lat,
+      point.lng,
+      point.heading,
+      point.sats,
+      point.gpsFix,
     );
 
     if (!robotMarkerRef.current) {
       robotMarkerRef.current = L.marker(position, {
-        icon: createRobotIcon(latestPoint.heading),
+        icon: createRobotIcon(point.heading),
         title: 'Rover 01',
       })
         .bindTooltip(tooltipHtml, {
@@ -120,9 +130,9 @@ export const MonitoringMap = ({ fullBleed = false }: { fullBleed?: boolean }) =>
     }
 
     robotMarkerRef.current.setLatLng(position);
-    robotMarkerRef.current.setIcon(createRobotIcon(latestPoint.heading));
+    robotMarkerRef.current.setIcon(createRobotIcon(point.heading));
     robotMarkerRef.current.setTooltipContent(tooltipHtml);
-  }, [latestPoint]);
+  }, [point]);
 
   const handleZoomIn = () => {
     mapRef.current?.zoomIn();
@@ -133,8 +143,7 @@ export const MonitoringMap = ({ fullBleed = false }: { fullBleed?: boolean }) =>
   };
 
   const handleFocusRobot = () => {
-    if (!latestPoint) return;
-    mapRef.current?.flyTo([latestPoint.lat, latestPoint.lng], MAX_ZOOM, {
+    mapRef.current?.flyTo([point.lat, point.lng], MAX_ZOOM, {
       animate: true,
       duration: 0.6,
     });
@@ -191,34 +200,41 @@ export const MonitoringMap = ({ fullBleed = false }: { fullBleed?: boolean }) =>
       </div>
 
       <div className="absolute bottom-4 left-3 z-[700] flex max-w-[calc(100%-1.5rem)] flex-wrap items-center gap-2 rounded-full border border-white/18 bg-[#091612]/78 px-3 py-2 text-[10px] font-semibold text-white shadow-xl shadow-slate-950/25 backdrop-blur-xl sm:bottom-5 sm:left-8 sm:gap-4 sm:px-4 sm:py-3 sm:text-xs">
-  {isLoading && <span>Memuat posisi robot...</span>}
-  {isError && <span className="text-red-300">Gagal memuat data robot</span>}
-  {latestPoint && (
-    <>
-      <span className="inline-flex items-center gap-1.5 sm:gap-2">
-        <span
-          className={[
-            'h-2 w-2 rounded sm:h-3 sm:w-3',
-            latestPoint.gpsFix ? 'bg-sky-400' : 'bg-red-500',
-          ].join(' ')}
-        />
-        {latestPoint.status}
-      </span>
-      {/* Di mobile sembunyikan label "Lat/Lon", tampilkan angka saja lebih ringkas */}
-      <span className="hidden sm:inline">
-        Lat {latestPoint.lat.toFixed(6)}, Lon {latestPoint.lng.toFixed(6)}
-      </span>
-      <span className="sm:hidden">
-        {latestPoint.lat.toFixed(4)}, {latestPoint.lng.toFixed(4)}
-      </span>
-      <span>
-        <span className="hidden sm:inline">Heading </span>
-        {latestPoint.heading}&deg;
-      </span>
-      <span>{latestPoint.sats} <span className="hidden sm:inline">satelit</span><span className="sm:hidden">sat</span></span>
-    </>
-  )}
-</div>
+        {isLoading && <span>Memuat posisi robot...</span>}
+        {isError && (
+          <span className="text-amber-300">
+            Data live gagal &middot; menampilkan posisi cadangan
+          </span>
+        )}
+        {isUsingDummy && !isLoading && !isError && (
+          <span className="text-amber-300">Menampilkan posisi cadangan</span>
+        )}
+
+        <span className="inline-flex items-center gap-1.5 sm:gap-2">
+          <span
+            className={[
+              'h-2 w-2 rounded sm:h-3 sm:w-3',
+              point.gpsFix ? 'bg-sky-400' : 'bg-red-500',
+            ].join(' ')}
+          />
+          {point.status}
+        </span>
+        {/* Di mobile sembunyikan label "Lat/Lon", tampilkan angka saja lebih ringkas */}
+        <span className="hidden sm:inline">
+          Lat {point.lat.toFixed(6)}, Lon {point.lng.toFixed(6)}
+        </span>
+        <span className="sm:hidden">
+          {point.lat.toFixed(4)}, {point.lng.toFixed(4)}
+        </span>
+        <span>
+          <span className="hidden sm:inline">Heading </span>
+          {point.heading}&deg;
+        </span>
+        <span>
+          {point.sats} <span className="hidden sm:inline">satelit</span>
+          <span className="sm:hidden">sat</span>
+        </span>
+      </div>
     </div>
   );
 };

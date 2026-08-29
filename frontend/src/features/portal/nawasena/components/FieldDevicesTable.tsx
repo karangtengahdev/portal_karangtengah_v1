@@ -1,7 +1,7 @@
 import { IconBug, IconLeaf, IconRobot } from '@tabler/icons-react';
 
 import { devices, type FieldDevice } from '../data/monitoringMapData';
-import { BatteryIndicator } from './BatteryIndicator';
+// import { BatteryIndicator } from './BatteryIndicator';
 import { ConnectionBadge, StatusBadge } from './StatusBadge';
 
 const DeviceIcon = ({ device }: { device: FieldDevice }) => {
@@ -47,7 +47,7 @@ export const FieldDevicesTable = () => (
             <th className="w-[18%] pb-3 pr-4 font-semibold">Lokasi</th>
             <th className="w-[15%] pb-3 pr-4 font-semibold">Status</th>
             <th className="w-[14%] pb-3 pr-4 font-semibold">Deteksi</th>
-            <th className="w-[20%] pb-3 pr-4 font-semibold">Baterai / Sinyal</th>
+            {/* <th className="w-[20%] pb-3 pr-4 font-semibold">Baterai / Sinyal</th> */}
             <th className="w-[13%] pb-3 font-semibold">Koneksi</th>
           </tr>
         </thead>
@@ -70,9 +70,9 @@ export const FieldDevicesTable = () => (
               <td className="pr-4 text-[#4f5b52]">
                 {device.detections ? `${device.detections} Deteksi` : '—'}
               </td>
-              <td className="pr-4">
+              {/* <td className="pr-4">
                 <BatteryIndicator value={device.battery} />
-              </td>
+              </td> */}
               <td>
                 <ConnectionBadge status={device.connection} />
               </td>

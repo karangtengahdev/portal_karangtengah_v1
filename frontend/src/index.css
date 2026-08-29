@@ -1265,3 +1265,33 @@ a {
     animation: none;
   }
 }
+
+/* ===== LOGIN PAGE ===== */
+
+.login-card-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 860px) {
+  .login-card-grid {
+    grid-template-columns: 1fr 1.15fr;
+  }
+}
+
+.login-brand-panel {
+  display: none;
+  position: relative;
+  overflow: hidden;
+  padding: 48px 40px;
+  background: linear-gradient(145deg, #173a29 0%, #1F4A34 35%, #0f766e 100%);
+  color: #ffffff;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+@media (min-width: 860px) {
+  .login-brand-panel {
+    display: flex;
+  }
+}

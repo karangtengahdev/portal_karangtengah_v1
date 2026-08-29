@@ -22,45 +22,178 @@ export const LoginPage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-50 px-4 py-8 text-neutral-950">
-      <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl items-center justify-center">
-        <section className="grid w-full overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm lg:grid-cols-[1fr_1fr]">
-          <div className="hidden bg-[linear-gradient(135deg,#166534_0%,#0f766e_45%,#0369a1_100%)] p-10 text-white lg:flex lg:flex-col lg:justify-between">
-            <div>
-              <p className="text-sm font-medium uppercase tracking-[0.18em] text-emerald-100">
-                Portal Desa
-              </p>
-              <h1 className="mt-4 max-w-lg text-4xl font-semibold leading-tight">
-                Karangtengah
-              </h1>
-            </div>
-            <div className="grid grid-cols-3 gap-3 text-sm">
-              <div className="rounded-md bg-white/12 p-4">
-                <p className="text-2xl font-semibold">128</p>
-                <p className="mt-1 text-emerald-50">Data warga</p>
-              </div>
-              <div className="rounded-md bg-white/12 p-4">
-                <p className="text-2xl font-semibold">24</p>
-                <p className="mt-1 text-emerald-50">Agenda</p>
-              </div>
-              <div className="rounded-md bg-white/12 p-4">
-                <p className="text-2xl font-semibold">8</p>
-                <p className="mt-1 text-emerald-50">Layanan</p>
-              </div>
-            </div>
+    <main
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #f8faf5 0%, #eef3e6 50%, #f5f2eb 100%)',
+        padding: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: "'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui, sans-serif",
+      }}
+    >
+      <section
+        style={{
+          display: 'grid',
+          width: '100%',
+          maxWidth: '1040px',
+          overflow: 'hidden',
+          borderRadius: '24px',
+          border: '1px solid rgba(31, 74, 52, 0.08)',
+          background: '#ffffff',
+          boxShadow:
+            '0 25px 50px rgba(31, 74, 52, 0.08), 0 8px 24px rgba(31, 74, 52, 0.04), 0 0 0 1px rgba(255,255,255,0.8)',
+          gridTemplateColumns: '1fr',
+        }}
+        className="login-card-grid"
+      >
+        {/* Panel kiri — branding */}
+        <div className="login-brand-panel">
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <p
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.22em',
+                color: 'rgba(255,255,255,0.7)',
+                margin: 0,
+              }}
+            >
+              Portal Desa
+            </p>
+            <h1
+              style={{
+                marginTop: '12px',
+                fontSize: '36px',
+                fontWeight: 800,
+                lineHeight: 1.1,
+                color: '#ffffff',
+                fontFamily:
+                  "'Playfair Display', 'Cormorant Garamond', Georgia, serif",
+                letterSpacing: '-0.01em',
+              }}
+            >
+              Karang
+              <br />
+              tengah
+            </h1>
+            <div
+              style={{
+                width: '48px',
+                height: '3px',
+                borderRadius: '999px',
+                background: 'rgba(255,255,255,0.35)',
+                marginTop: '20px',
+              }}
+            />
+            <p
+              style={{
+                marginTop: '16px',
+                fontSize: '13px',
+                fontWeight: 400,
+                lineHeight: 1.7,
+                color: 'rgba(255,255,255,0.72)',
+                maxWidth: '280px',
+              }}
+            >
+              Sistem informasi terpadu untuk pengelolaan data desa, pertanian
+              cerdas, dan UMKM lokal.
+            </p>
           </div>
 
-          <FormLogin
-            errorMessage={errorMessage}
-            isSubmitting={isSubmitting}
-            onPasswordChange={setPassword}
-            onSubmit={handleLogin}
-            onEmailChange={setEmail}
-            password={password}
-            email={email}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '10px',
+              position: 'relative',
+              zIndex: 2,
+            }}
+          >
+            {[
+              { value: '128', label: 'Data Warga' },
+              { value: '24', label: 'Agenda' },
+              { value: '8', label: 'Layanan' },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                style={{
+                  padding: '14px 12px',
+                  borderRadius: '14px',
+                  background: 'rgba(255,255,255,0.1)',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  textAlign: 'center',
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: '22px',
+                    fontWeight: 800,
+                    color: '#ffffff',
+                    margin: 0,
+                    lineHeight: 1,
+                  }}
+                >
+                  {stat.value}
+                </p>
+                <p
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 500,
+                    color: 'rgba(255,255,255,0.6)',
+                    marginTop: '6px',
+                    margin: '6px 0 0',
+                  }}
+                >
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Decorative shapes */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '-60px',
+              right: '-60px',
+              width: '200px',
+              height: '200px',
+              borderRadius: '50%',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              pointerEvents: 'none',
+            }}
           />
-        </section>
-      </div>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '-40px',
+              left: '-40px',
+              width: '160px',
+              height: '160px',
+              borderRadius: '50%',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.05)',
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
+
+        {/* Panel kanan — form */}
+        <FormLogin
+          errorMessage={errorMessage}
+          isSubmitting={isSubmitting}
+          onPasswordChange={setPassword}
+          onSubmit={handleLogin}
+          onEmailChange={setEmail}
+          password={password}
+          email={email}
+        />
+      </section>
     </main>
   );
 };

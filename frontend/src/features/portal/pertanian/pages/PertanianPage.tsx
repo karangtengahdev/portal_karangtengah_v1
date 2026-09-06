@@ -85,7 +85,7 @@ export const PertanianPage = () => {
             </div>
           ) : (
             <div className="space-y-16">
-            <DampakEkonomiCta avgYieldTonHa={stats?.avgYieldTonHa} />
+              <DampakEkonomiCta avgYieldTonHa={stats?.avgYieldTonHa} />
               
               {/* Statistik Per Padukuhan */}
               {stats?.byPadukuhan && stats.byPadukuhan.length > 0 && (

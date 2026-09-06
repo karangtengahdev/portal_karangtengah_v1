@@ -1,6 +1,84 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/v1/public/ekonomi/asumsi": {
+      "get": {
+        "operationId": "EkonomiController_asumsi",
+        "summary": "Asumsi perhitungan yang berlaku",
+        "description": "Mengembalikan ketetapan perhitungan dampak ekonomi beserta sumber tiap angkanya.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/ekonomi"
+        ]
+      }
+    },
+    "/v1/public/ekonomi/ringkasan": {
+      "get": {
+        "operationId": "EkonomiController_ringkasan",
+        "summary": "Rekap panen pada rentang tanggal",
+        "description": "Jumlah petani, petak, luas lahan, dan produktivitas tertimbang dari catatan panen.",
+        "parameters": [
+          {
+            "name": "sampai",
+            "required": false,
+            "in": "query",
+            "description": "Tanggal akhir, format YYYY-MM-DD",
+            "schema": {}
+          },
+          {
+            "name": "dari",
+            "required": false,
+            "in": "query",
+            "description": "Tanggal awal, format YYYY-MM-DD",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/ekonomi"
+        ]
+      }
+    },
+    "/v1/public/ekonomi/dampak": {
+      "get": {
+        "operationId": "EkonomiController_dampak",
+        "summary": "Perhitungan dampak ekonomi sebelum dan sesudah",
+        "description": "Kalkulasi kerugian hama, potensi penghematan, proyeksi replikasi, dan jejak langkah perhitungannya.",
+        "parameters": [
+          {
+            "name": "sampai",
+            "required": false,
+            "in": "query",
+            "description": "Tanggal akhir, format YYYY-MM-DD",
+            "schema": {}
+          },
+          {
+            "name": "dari",
+            "required": false,
+            "in": "query",
+            "description": "Tanggal awal, format YYYY-MM-DD",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/ekonomi"
+        ]
+      }
+    },
     "/v1/auth/login": {
       "post": {
         "operationId": "AuthController_login",

@@ -1,0 +1,302 @@
+/* Lembar perhitungan dampak ekonomi — NAWASENA Center
+   Palet mengikuti portal Karangtengah: hijau sawah, kertas hangat, kuning gabah. */
+
+.page {
+  --tinta: #1b2410;
+  --tinta-lembut: #5c6551;
+  --kertas: #fbfaf6;
+  --sawah: #2f5d2a;
+  --sawah-muda: #eef3e8;
+  --gabah: #9a6b12;
+  --gabah-muda: #fbf3e0;
+  --garis: #ddd9cb;
+
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+  background: var(--kertas);
+  color: var(--tinta);
+  font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Kepala ─────────────────────────────── */
+.kepala {
+  border-bottom: 2px solid var(--sawah);
+  padding-bottom: 1.75rem;
+  margin-bottom: 2.5rem;
+}
+.kalurahan {
+  margin: 0 0 0.5rem;
+  color: var(--tinta-lembut);
+  font-size: 0.9rem;
+}
+.judul {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.75rem, 4vw, 2.6rem);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  max-width: 22ch;
+}
+.sumberData {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--tinta-lembut);
+}
+
+/* ── Angka pokok ────────────────────────── */
+.pokok {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+  margin-bottom: 3.5rem;
+}
+.pokokAngka {
+  display: block;
+  font-size: clamp(3.5rem, 9vw, 5.5rem);
+  line-height: 0.95;
+  font-weight: 650;
+  color: var(--sawah);
+  letter-spacing: -0.035em;
+}
+.pokokSatuan {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 1.05rem;
+  color: var(--tinta-lembut);
+}
+.pokokKet {
+  margin: 1rem 0 0;
+  max-width: 40ch;
+  font-size: 0.94rem;
+  color: var(--tinta-lembut);
+}
+.pokokLain {
+  margin: 0.5rem 0 0;
+  display: grid;
+  gap: 0;
+}
+.pokokLain > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--garis);
+}
+.pokokLain dt {
+  color: var(--tinta-lembut);
+  font-size: 0.94rem;
+}
+.pokokLain dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ── Blok umum ──────────────────────────── */
+.blok {
+  margin-bottom: 3.5rem;
+}
+.blokJudul {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.blokKet {
+  margin: 0 0 1.25rem;
+  max-width: 68ch;
+  color: var(--tinta-lembut);
+  font-size: 0.95rem;
+}
+
+/* ── Tabel ──────────────────────────────── */
+.tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.tabel th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--tinta-lembut);
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1.5px solid var(--sawah);
+  white-space: nowrap;
+}
+.tabel td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--garis);
+  vertical-align: top;
+}
+.tabel tbody tr:hover {
+  background: var(--sawah-muda);
+}
+.kanan {
+  text-align: right;
+}
+.tandaPilot {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 3px;
+  background: var(--sawah-muda);
+  color: var(--sawah);
+  font-size: 0.72rem;
+  font-weight: 600;
+  vertical-align: 1px;
+}
+
+/* ── Sebelum / sesudah ──────────────────── */
+.banding {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.kolomSebelum,
+.kolomSesudah {
+  padding: 1.5rem;
+  border: 1px solid var(--garis);
+}
+.kolomSebelum {
+  background: var(--gabah-muda);
+  border-color: #e6d3a8;
+}
+.kolomSesudah {
+  background: var(--sawah-muda);
+  border-color: #c9dbc0;
+}
+.kolomSebelum h3,
+.kolomSesudah h3 {
+  margin: 0 0 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.kolomSebelum h3 { color: var(--gabah); }
+.kolomSesudah h3 { color: var(--sawah); }
+
+.bandingAngka {
+  margin: 0;
+  font-size: 2.15rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+.bandingKet {
+  margin: 0.25rem 0 1.25rem;
+  font-size: 0.9rem;
+  color: var(--tinta-lembut);
+}
+.rincian {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rincian li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 0.92rem;
+}
+.rincian li span { color: var(--tinta-lembut); }
+.rincianTegas {
+  font-size: 0.98rem !important;
+  padding-top: 0.75rem !important;
+}
+.rincianTegas b { font-size: 1.02rem; }
+
+.catatan {
+  margin: 1.25rem 0 0;
+  max-width: 72ch;
+  font-size: 0.88rem;
+  color: var(--tinta-lembut);
+}
+
+/* ── Proyeksi ───────────────────────────── */
+.proyeksi {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 2rem;
+  padding: 1.75rem;
+  background: var(--sawah);
+  color: #f2f6ee;
+}
+.proyeksiAngka {
+  margin: 0;
+  font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #f6e9c8;
+}
+.proyeksiKet {
+  margin: 0.6rem 0 0;
+  max-width: 40ch;
+  font-size: 0.94rem;
+  color: #cfdcc6;
+}
+.proyeksiRumus {
+  margin: 0;
+  align-self: end;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: #cfdcc6;
+}
+
+/* ── Jejak perhitungan ──────────────────── */
+.jejak {
+  margin: 0;
+  padding-left: 1.4rem;
+  max-width: 76ch;
+  font-size: 0.93rem;
+}
+.jejak li {
+  padding: 0.4rem 0;
+  border-bottom: 1px dashed var(--garis);
+}
+.jejak li:last-child { border-bottom: none; }
+
+/* ── Kosong & kaki ──────────────────────── */
+.kosong {
+  padding: 4rem 0;
+  max-width: 52ch;
+}
+.kosong h1 {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.kosong p {
+  margin: 0;
+  color: var(--tinta-lembut);
+}
+.kaki {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--garis);
+  font-size: 0.85rem;
+  color: var(--tinta-lembut);
+}
+
+/* ── Responsif ──────────────────────────── */
+@media (max-width: 780px) {
+  .pokok,
+  .banding,
+  .proyeksi {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .page { padding: 2rem 1.1rem 3.5rem; }
+  .tabel { font-size: 0.85rem; }
+  .tabel th, .tabel td { padding: 0.5rem 0.4rem; }
+}
+
+@media print {
+  .page { background: #fff; padding: 0; max-width: none; }
+  .tabel tbody tr:hover { background: none; }
+  .blok { break-inside: avoid; }
+}

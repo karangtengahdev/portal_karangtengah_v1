@@ -26,6 +26,7 @@ model Profile {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   news News[]
+  musimTanam MusimTanam[]
 
   @@map("profiles")
 }
@@ -121,6 +122,8 @@ model HarvestRecord {
   yieldTonHa   Float?   @map("yield_ton_ha")    // dihitung: ubinan_kg * 1.6
   estimatedKg  Float?   @map("estimated_kg")
   pestLossPct  Float?   @map("pest_loss_pct")
+  scheduleId   String?  @map("schedule_id") @db.Uuid
+  padukuhan    String?
   harvestDate  DateTime @map("harvest_date") @db.Date
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
 
@@ -167,49 +170,48 @@ model News {
   excerpt     String?
   content     String
   coverUrl    String?   @map("cover_url")
+  // Kategori tampilan (mis. "Kegiatan", "Pengumuman") -- teks bebas,
+  // dipilih dari daftar tetap di form admin (lihat BERITA_CATEGORIES
+  // di frontend), bukan tabel referensi terpisah.
+  category    String?
+  // Nama byline yang TAMPIL PUBLIK (mis. "Tim Redaksi") -- SENGAJA
+  // terpisah dari authorId di bawah. authorId = akun admin yang login
+  // saat membuat (untuk audit internal), author = nama yang mau
+  // ditampilkan ke pembaca, tidak harus sama & tidak perlu akun asli.
+  author      String?
   status      String    @default("draft") // draft | published
   publishedAt DateTime? @map("published_at") @db.Timestamptz
   authorId    String?   @map("author_id") @db.Uuid
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
-  author Profile? @relation(fields: [authorId], references: [id])
+  authorProfile Profile? @relation(fields: [authorId], references: [id])
 
   @@index([status, publishedAt])
   @@map("news")
 }
 
+// Profil desa - singleton (1 baris)
 model Umkm {
   id             String   @id @default(uuid()) @db.Uuid
   name           String
   slug           String   @unique
   ownerName      String?  @map("owner_name")
   description    String?
-  category       String?  // makanan | kerajinan | tani | lainnya
+  category       String?
   coverUrl       String?  @map("cover_url")
   contactPhone   String?  @map("contact_phone")
   contactAddress String?  @map("contact_address")
-  products       Json?    // [{name, price, unit, stock, photoUrl, note}]
-  status         String   @default("draft") // draft | published
+  products       Json?
+  status         String   @default("draft")
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   @@index([status])
   @@index([category])
   @@map("umkm")
-}]
-  images         Json?    // [url1, url2]
-  contactPhone   String?  @map("contact_phone")
-  contactAddress String?  @map("contact_address")
-  status         String   @default("draft")
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  @@index([status])
-  @@map("umkm")
 }
 
-// Profil desa - singleton (1 baris)
 model VillageProfile {
   id          String   @id @default(uuid()) @db.Uuid
   vision      String?
@@ -230,4 +232,63 @@ model VillageGallery {
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("village_gallery")
+}
+
+// ============================================================
+// PLANTING SCHEDULE (Jadwal Tanam)
+// ============================================================
+
+enum StatusMusimTanam {
+  DRAFT
+  AKTIF
+  SELESAI
+}
+
+model Komoditas {
+  id        String   @id @default(uuid()) @db.Uuid
+  nama      String
+  deskripsi String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  musimTanam MusimTanam[]
+
+  @@map("komoditas")
+}
+
+model MusimTanam {
+  id             String           @id @default(uuid()) @db.Uuid
+  judul          String
+  komoditasId    String           @map("komoditas_id") @db.Uuid
+  lokasi         String?
+  tanggalMulai   DateTime?        @map("tanggal_mulai") @db.Timestamptz
+  tanggalSelesai DateTime?        @map("tanggal_selesai") @db.Timestamptz
+  status         StatusMusimTanam @default(DRAFT)
+  createdById    String?          @map("created_by_id") @db.Uuid
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  komoditas  Komoditas       @relation(fields: [komoditasId], references: [id])
+  createdBy  Profile?        @relation(fields: [createdById], references: [id])
+  tahapan    TahapanJadwal[]
+
+  @@index([status])
+  @@map("musim_tanam")
+}
+
+model TahapanJadwal {
+  id             String    @id @default(uuid()) @db.Uuid
+  musimTanamId   String    @map("musim_tanam_id") @db.Uuid
+  namaTahapan    String    @map("nama_tahapan")
+  tanggalMulai   DateTime  @map("tanggal_mulai") @db.Timestamptz
+  tanggalSelesai DateTime? @map("tanggal_selesai") @db.Timestamptz
+  urutan         Int
+  deskripsi      String?
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  musimTanam MusimTanam @relation(fields: [musimTanamId], references: [id], onDelete: Cascade)
+
+  @@index([musimTanamId, urutan])
+  @@map("tahapan_jadwal")
 }

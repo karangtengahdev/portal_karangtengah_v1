@@ -27,6 +27,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 @Module({
   imports: [
+    EkonomiModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],

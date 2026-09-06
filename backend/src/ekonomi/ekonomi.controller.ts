@@ -13,7 +13,7 @@ function tanggal(nilai: string, label: string): Date {
   return d;
 }
 
-@Controller('ekonomi')
+@Controller('public/ekonomi')
 export class EkonomiController {
   constructor(private readonly ekonomi: EkonomiService) {}
 

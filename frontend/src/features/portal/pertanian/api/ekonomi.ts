@@ -92,6 +92,6 @@ export async function ambilDampakEkonomi(
   dari = '2026-01-01',
   sampai = '2026-12-31',
 ): Promise<DampakEkonomi> {
-  const res = await api.get('/ekonomi/dampak', { params: { dari, sampai } });
+  const res = await api.get('/v1/public/ekonomi/dampak', { params: { dari, sampai } });
   return bukaBungkus<DampakEkonomi>(res.data);
 }

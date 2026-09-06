@@ -3,6 +3,7 @@ import { usePublicPertanian } from '../hooks/usePertanian';
 import { formatDecimal } from '../utils/formatPertanian';
 import { PadukuhanStatCard } from '../components/PadukuhanStatCard';
 import { HarvestTable } from '../components/HarvestTable';
+import { DampakEkonomiCta } from '../components/DampakEkonomiCta';
 
 import sawahBanner from '../../../../assets/karangtengah-sawah.jpg';
 
@@ -84,6 +85,7 @@ export const PertanianPage = () => {
             </div>
           ) : (
             <div className="space-y-16">
+            <DampakEkonomiCta avgYieldTonHa={stats?.avgYieldTonHa} />
               
               {/* Statistik Per Padukuhan */}
               {stats?.byPadukuhan && stats.byPadukuhan.length > 0 && (

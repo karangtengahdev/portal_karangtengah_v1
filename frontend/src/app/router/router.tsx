@@ -22,6 +22,7 @@ import { AdminVillagePage } from '../../features/nawasena/village/pages/AdminVil
 import { BeritaDetailPage } from '../../features/portal/berita/pages/BeritaDetailPage';
 import { AdminPlantingSchedulePage } from '../../features/nawasena/planting-schedule/pages/AdminPlantingSchedulePage';
 import { JadwalTanamPage } from '../../features/portal/pertanian/pages/JadwalTanamPage';
+import { DampakEkonomiPage } from '../../features/portal/pertanian/pages/DampakEkonomiPage';
 
 export const router = createBrowserRouter([
   // ============ PORTAL PUBLIK (tidak perlu login) ============
@@ -38,6 +39,7 @@ export const router = createBrowserRouter([
       { path: 'kontak', element: <KontakPage /> },
       { path: 'berita/:slug', element: <BeritaDetailPage /> },
       { path: 'jadwal-tanam', element: <JadwalTanamPage /> },
+      { path: 'pertanian/dampak-ekonomi', element: <DampakEkonomiPage /> },
     ],
   },
 

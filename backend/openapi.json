@@ -362,6 +362,25 @@
         ]
       }
     },
+    "/v1/cms/news/upload-image": {
+      "post": {
+        "operationId": "NewsCmsController_uploadInlineImage",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/news"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
     "/v1/cms/news/{id}/publish": {
       "patch": {
         "operationId": "NewsCmsController_publish",

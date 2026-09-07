@@ -11,7 +11,6 @@ export class TelemetryService {
   async ingest(dto: IngestDto) {
     const recordedAt = dto.recordedAt ? new Date(dto.recordedAt) : new Date();
 
-    // 1. Pastikan device ADA dulu (telemetry punya FK ke device).
     await this.prisma.device.upsert({
       where: { deviceId: dto.deviceId },
       update: { status: 'online', updatedAt: new Date() },
@@ -22,12 +21,10 @@ export class TelemetryService {
       },
     });
 
-    // 2. Baru simpan raw (audit trail semua paket)
     await this.prisma.telemetry.create({
       data: { deviceId: dto.deviceId, payload: dto as any, recordedAt },
     });
 
-    // 3. Routing by type
     if (dto.type === 'rover') {
       const d = dto.data;
       await this.prisma.roverOperation.create({
@@ -54,5 +51,19 @@ export class TelemetryService {
     }
 
     return { received: true, deviceId: dto.deviceId, type: dto.type, recordedAt };
+  }
+
+  // BARU: baca balik data mentah -- utk verifikasi tim teknis apakah
+  // data dari Bridge memang benar sudah masuk, tanpa perlu buka
+  // database langsung. Ini baca tabel Telemetry (raw/audit trail),
+  // BUKAN tabel RoverOperation/TrapEvent yg sudah diproses.
+  async listRecent(limit = 50, deviceId?: string) {
+    const where: any = {};
+    if (deviceId) where.deviceId = deviceId;
+    return this.prisma.telemetry.findMany({
+      where,
+      orderBy: { recordedAt: 'desc' },
+      take: limit,
+    });
   }
 }

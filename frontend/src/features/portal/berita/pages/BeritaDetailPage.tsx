@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { IconArrowLeft, IconCalendarEvent, IconEye } from '@tabler/icons-react';
+import { IconArrowLeft, IconCalendarEvent, IconEye, IconUser } from '@tabler/icons-react';
 
 import { usePublicBeritaDetail } from '../hooks/useBerita';
 import { formatBeritaDate, formatViews } from '../utils/formatBerita';
@@ -73,6 +73,12 @@ export const BeritaDetailPage = () => {
           
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#e5ecdf]">
             <div className="flex flex-wrap items-center gap-5 text-sm font-medium text-[#6C757D]">
+              {berita.author && (
+                <span className="inline-flex items-center gap-2">
+                  <IconUser size={18} />
+                  {berita.author}
+                </span>
+              )}
               <span className="inline-flex items-center gap-2">
                 <IconCalendarEvent size={18} />
                 {formatBeritaDate(berita.publishedAt)}

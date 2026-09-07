@@ -435,42 +435,88 @@ export const DashboardPage = () => {
         </div>
       </section>
 
-      {/* SOROTAN PADUKUHAN -- tampil HANYA kalau ada padukuhan dgn
-          hasData=true (sekarang: Karangtengah). Kalau belum ada satu
-          pun yang diisi, section ini otomatis tidak muncul sama
-          sekali -- bukan menampilkan kartu kosong. */}
+      {/* SOROTAN PADUKUHAN -- REDESAIN: pakai "bahasa visual" yang SAMA
+          dgn section Lurah di atas (leadership-*: portrait bulat,
+          badge mengambang, kartu teks) supaya terasa satu tema, bukan
+          section terpisah yg kelihatan "nempel" begitu saja.
+          Backdrop sengaja beda (pemudaDesaImage, bukan villageSawahImage)
+          supaya tetap terasa beda meski strukturnya serupa -- ini pas
+          krn temanya memang AMMI/pemuda.
+          Tampil HANYA kalau ada padukuhan dgn hasData=true. */}
       {featuredPadukuhan && (
-        <section className="px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-[1440px] rounded-[32px] bg-[#F7F7F4] p-6 sm:p-10">
-            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#72b841]">
-              <IconBuildingCommunity size={16} stroke={1.9} />
-              Sorotan Padukuhan
-            </p>
-            <h2 className="mt-2 text-2xl font-extrabold leading-tight text-[#101708] sm:text-3xl">
-              Padukuhan {featuredPadukuhan.name}
-            </h2>
-            {featuredPadukuhan.kepalaDukuh && (
-              <p className="mt-1 text-sm font-semibold text-[#4f842f]">
-                Kepala Dukuh: {featuredPadukuhan.kepalaDukuh}
-              </p>
-            )}
-            {featuredPadukuhan.sambutan && (
-              <p className="mt-4 max-w-3xl text-sm leading-7 text-[#555555] sm:text-base">
-                {featuredPadukuhan.sambutan}
-              </p>
-            )}
+        <section className="leadership-section">
+          <div className="leadership-container">
+            <div className="leadership-main">
+              <div className="leadership-portrait-area">
+                <div className="leadership-portrait-circle" />
+                <div className="leadership-landscape-shape">
+                  <img alt="" className="h-full w-full object-cover object-center" src={pemudaDesaImage} />
+                </div>
+                <img
+                  alt={`Kepala Dukuh ${featuredPadukuhan.name}`}
+                  className="leadership-leader-image"
+                  src={featuredPadukuhan.gallery[0]?.imageUrl || pemudaDesaImage}
+                />
+                <div className="leadership-portrait-badge">
+                  <span className="leadership-portrait-badge-icon">
+                    <IconBuildingCommunity size={28} stroke={1.8} />
+                  </span>
+                  <span>
+                    <span>Lokasi program</span>
+                    <strong>NAWASENA Smart Farming</strong>
+                  </span>
+                </div>
+              </div>
 
+              <div className="leadership-content">
+                <p className="leadership-eyebrow">
+                  <IconBuildingCommunity size={14} stroke={1.9} />
+                  <span>Sorotan Padukuhan</span>
+                </p>
+                <h2 className="leadership-title">
+                  Padukuhan{' '}
+                  <em className="leadership-title-highlight">{featuredPadukuhan.name}</em>
+                </h2>
+
+                {featuredPadukuhan.kepalaDukuh && (
+                  <p className="mt-2 text-sm font-bold uppercase tracking-wide text-[#4f842f]">
+                    Kepala Dukuh: {featuredPadukuhan.kepalaDukuh}
+                  </p>
+                )}
+
+                {featuredPadukuhan.sambutan && (
+                  <p className="leadership-copy mt-4">{featuredPadukuhan.sambutan}</p>
+                )}
+
+                <div className="leadership-cta-group">
+                  <Link className="leadership-button leadership-button-primary" to="/nawasena">
+                    <IconPlant2 size={17} stroke={1.8} />
+                    Lihat Program NAWASENA
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Galeri kegiatan -- grid rapi, bukan lagi satu foto polos */}
             {featuredPadukuhan.gallery.length > 0 && (
-              <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {featuredPadukuhan.gallery.slice(0, 8).map((img) => (
-                  <div key={img.id} className="aspect-square overflow-hidden rounded-[14px] bg-[#eef3e8]">
-                    <img
-                      src={img.imageUrl}
-                      alt={img.caption ?? featuredPadukuhan.name}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                ))}
+              <div className="mt-14">
+                <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#72b841]">
+                  Dokumentasi Kegiatan
+                </p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {featuredPadukuhan.gallery.slice(0, 8).map((img) => (
+                    <div
+                      key={img.id}
+                      className="group aspect-square overflow-hidden rounded-[18px] border border-[#e5ecdf] shadow-[0_8px_20px_rgba(16,23,8,0.06)]"
+                    >
+                      <img
+                        src={img.imageUrl}
+                        alt={img.caption ?? featuredPadukuhan.name}
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

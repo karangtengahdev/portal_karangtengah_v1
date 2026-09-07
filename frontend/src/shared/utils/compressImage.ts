@@ -22,6 +22,17 @@ export const compressImage = (
       return;
     }
 
+    // PERBAIKAN PENTING: PNG sering dipakai JUSTRU karena
+    // transparansinya (foto tanpa background, logo, dll). JPEG SAMA
+    // SEKALI TIDAK MENDUKUNG TRANSPARANSI -- area transparan otomatis
+    // "dipadatkan" jadi HITAM PEKAT saat kanvas diekspor ke JPEG. Itu
+    // penyebab foto tanpa-background berubah jadi background hitam.
+    // Solusinya: PNG tetap diekspor sbg PNG (transparansi terjaga,
+    // lossless), HANYA file selain PNG yang dikompres ke JPEG.
+    const isPng = file.type === 'image/png';
+    const outputType = isPng ? 'image/png' : 'image/jpeg';
+    const outputExt = isPng ? '.png' : '.jpg';
+
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
@@ -50,18 +61,17 @@ export const compressImage = (
               resolve(file);
               return;
             }
-            // Nama file dipertahankan, ekstensi diseragamkan ke .jpg
-            // krn hasil toBlob JPEG (kompres lebih efektif dari PNG
-            // utk foto biasa).
-            const newName = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+            const newName = file.name.replace(/\.[^.]+$/, '') + outputExt;
             const compressedFile = new File([blob], newName, {
-              type: 'image/jpeg',
+              type: outputType,
               lastModified: Date.now(),
             });
             resolve(compressedFile);
           },
-          'image/jpeg',
-          quality,
+          outputType,
+          // quality diabaikan browser utk PNG (PNG selalu lossless) --
+          // aman dikirim apa adanya, cuma efektif dipakai kalau JPEG.
+          isPng ? undefined : quality,
         );
       };
       img.onerror = () => reject(new Error('Gagal memuat gambar untuk dikompres.'));

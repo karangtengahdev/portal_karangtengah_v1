@@ -14,6 +14,7 @@ import {
 
 type RetryRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
+  _networkRetry?: boolean;
 };
 
 const rawApiUrl =
@@ -69,10 +70,22 @@ const refreshAccessToken = async () => {
   return tokens.accessToken;
 };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as RetryRequestConfig | undefined;
+
+    // ERR_NETWORK_CHANGED / koneksi putus-nyambung sesaat -- BUKAN
+    // error dari server (error.response tidak ada sama sekali).
+    // Coba ulang SEKALI setelah jeda singkat sebelum menyerah, supaya
+    // gangguan jaringan sesaat tidak langsung bikin halaman gagal load.
+    if (!error.response && originalRequest && !originalRequest._networkRetry) {
+      originalRequest._networkRetry = true;
+      await sleep(800);
+      return api(originalRequest);
+    }
 
     if (
       error.response?.status !== 401 ||
@@ -109,22 +122,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-
-
-// import axios from "axios";
-
-// const api = axios.create({
-//   baseURL: import.meta.env.VITE_BASEPATH,
-// });
-
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("accessToken");
-
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-
-//   return config;
-// });
-
-// export default api;

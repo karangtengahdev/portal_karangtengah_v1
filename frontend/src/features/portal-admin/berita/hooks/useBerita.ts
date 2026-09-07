@@ -7,6 +7,7 @@ import {
   uploadBeritaCover,
   publishAdminBerita,
 } from '../api/beritaApi';
+import { compressImage } from '../../../../shared/utils/compressImage';
 import type { BeritaItem, BeritaPayload } from '../types/berita';
 
 export const useAdminBerita = () => {
@@ -40,7 +41,12 @@ export const useAdminBerita = () => {
       setIsMutating(true);
       const response = await createAdminBerita(payload);
       if (response.success && file) {
-        await uploadBeritaCover(response.data.id, file);
+        // Kompres dulu sebelum upload -- foto asli dari HP gampang
+        // >4.5MB (limit keras Vercel Serverless Functions), yang
+        // manifest sbg error CORS di browser (request ditolak Vercel
+        // sebelum sampai ke Express/NestJS yg CORS-nya sudah benar).
+        const compressed = await compressImage(file);
+        await uploadBeritaCover(response.data.id, compressed);
       }
       await getBerita();
     } catch (err: any) {
@@ -56,7 +62,8 @@ export const useAdminBerita = () => {
       setIsMutating(true);
       await updateAdminBerita(id, payload);
       if (file) {
-        await uploadBeritaCover(id, file);
+        const compressed = await compressImage(file);
+        await uploadBeritaCover(id, compressed);
       }
       await getBerita();
     } catch (err: any) {

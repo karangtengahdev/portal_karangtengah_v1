@@ -8,6 +8,7 @@ import { IconPhoto } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 
 import { uploadInlineImage } from '../api/beritaApi';
+import { compressImage } from '../../../../shared/utils/compressImage';
 
 type BeritaRichEditorProps = {
   value: string;
@@ -25,7 +26,15 @@ export const BeritaRichEditor = ({ value, onChange }: BeritaRichEditorProps) => 
   // tidak nempel ke form -- bukan soal "belum update sekali render".
   const extensions = useMemo(
     () => [
-      StarterKit,
+      // link & underline DIMATIKAN dari StarterKit -- versi terbaru
+      // StarterKit ternyata sudah menyertakan keduanya secara bawaan,
+      // bentrok dengan Underline & Link yang saya tambahkan terpisah
+      // di bawah (perlu terpisah spy cocok dgn tombol toolbar Mantine).
+      // Tanpa ini muncul warning "Duplicate extension names" di console.
+      StarterKit.configure({
+        link: false,
+        underline: false,
+      }),
       Underline,
       Link.configure({ openOnClick: false }),
       TiptapImage.configure({ inline: false }),
@@ -64,7 +73,13 @@ export const BeritaRichEditor = ({ value, onChange }: BeritaRichEditorProps) => 
     const file = e.target.files?.[0];
     if (!file || !editor) return;
     try {
-      const { url } = await uploadInlineImage(file);
+      // Kompres dulu SEBELUM upload -- foto asli dari HP gampang
+      // >4.5MB (limit keras Vercel Serverless), yang manifest sbg
+      // error CORS di browser (bukan error ukuran yg jelas), krn
+      // request-nya ditolak Vercel sebelum sempat sampai ke Express/
+      // NestJS yg sudah benar setting CORS-nya.
+      const compressed = await compressImage(file);
+      const { url } = await uploadInlineImage(compressed);
       editor.chain().focus().setImage({ src: url }).run();
     } catch (err) {
       notifications.show({
@@ -124,7 +139,15 @@ export const BeritaRichEditor = ({ value, onChange }: BeritaRichEditorProps) => 
           </RichTextEditor.ControlsGroup>
         </RichTextEditor.Toolbar>
 
-        <RichTextEditor.Content mih={220} />
+        {/* PERBAIKAN: tambah class "prose" (Tailwind Typography) --
+            sama persis dgn yg dipakai halaman publik BeritaDetailPage.
+            Tanpa ini, Tailwind's base reset menghapus tampilan bawaan
+            utk list (bullet/nomor jadi tidak muncul), link (warna &
+            garis bawah hilang), dan miring (kurang jelas kelihatan) --
+            DATANYA tetap benar tersimpan (makanya tampil benar di
+            halaman publik yang SUDAH pakai .prose), cuma editornya
+            sendiri tidak menunjukkan itu sedang dipakai. */}
+        <RichTextEditor.Content className="prose prose-sm sm:prose-base max-w-none" mih={220} />
       </RichTextEditor>
     </div>
   );

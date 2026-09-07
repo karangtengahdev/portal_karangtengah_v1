@@ -8,8 +8,9 @@ export type PetakTerdokumentasi = {
   hasilKg: number;
   produktivitasTonPerHa: number;
   tanggalPanen: string;
-  bagianPilot: boolean;
 };
+
+export type KasusTerparah = PetakTerdokumentasi & { selisihDariRataPersen: number };
 
 export type RingkasanData = {
   periode: { dari: string; sampai: string };
@@ -19,11 +20,13 @@ export type RingkasanData = {
   totalLuasTerdataHa: number;
   totalHasilKg: number;
   rataProduktivitasTonPerHa: number;
+  rataPerPetakTonPerHa: number;
   kerugianHamaTercatat: {
     tersedia: boolean;
     jumlahLaporan: number;
     rataFraksi: number | null;
   };
+  kasusTerparah: KasusTerparah | null;
   petakTerdokumentasi: PetakTerdokumentasi[];
 };
 
@@ -52,11 +55,7 @@ export type HasilPerhitungan = {
     skenarioMin: SkenarioKerugian;
     skenarioMaks: SkenarioKerugian;
   };
-  sesudah: {
-    tingkatKerugian: number;
-    hasilTonPerHaMin: number;
-    hasilTonPerHaMaks: number;
-  };
+  sesudah: { tingkatKerugian: number; hasilTonPerHaMin: number; hasilTonPerHaMaks: number };
   penghematan: {
     kenaikanTonPerHaMin: number;
     kenaikanTonPerHaMaks: number;
@@ -72,15 +71,9 @@ export type HasilPerhitungan = {
   jejakPerhitungan: string[];
 };
 
-export type DampakEkonomi = {
-  data: RingkasanData;
-  perhitungan: HasilPerhitungan;
-};
+export type DampakEkonomi = { data: RingkasanData; perhitungan: HasilPerhitungan };
 
-/**
- * Backend membungkus respons dalam { success, data }. Beberapa endpoint lama
- * mengembalikan objek polos, jadi keduanya ditangani di sini.
- */
+/** Backend membungkus respons dalam { success, data }; endpoint lama kadang polos. */
 function bukaBungkus<T>(muatan: unknown): T {
   if (muatan && typeof muatan === 'object' && 'data' in muatan && 'success' in muatan) {
     return (muatan as { data: T }).data;

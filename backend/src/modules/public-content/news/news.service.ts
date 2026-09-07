@@ -23,7 +23,6 @@ export class NewsService {
   private async uniqueSlug(base: string, ignoreId?: string): Promise<string> {
     let slug = base;
     let n = 1;
-    // pastikan slug unik
     while (true) {
       const existing = await this.prisma.news.findUnique({ where: { slug } });
       if (!existing || existing.id === ignoreId) break;
@@ -48,6 +47,8 @@ export class NewsService {
           excerpt: true,
           coverUrl: true,
           publishedAt: true,
+          category: true,
+          author: true,
         },
       }),
       this.prisma.news.count({ where: { status: 'published' } }),
@@ -83,26 +84,30 @@ export class NewsService {
     return news;
   }
 
+  // PENTING: dto DISPREAD APA ADANYA, TIDAK ADA field category/author
+  // yang dibuang di sini. Kalau versi yang jalan sekarang di server
+  // Anda MASIH punya baris semacam:
+  //   const { category: _cat, author: _aut, ...prismaData } = dto;
+  // itu tandanya file lama yang masih ke-deploy -- ganti dgn versi ini.
   async create(dto: CreateNewsDto, authorId?: string) {
     const slug = await this.uniqueSlug(this.slugify(dto.title));
-    // authorId hanya dipakai kalau user-nya ADA di tabel profiles (hindari FK error).
     let safeAuthorId: string | undefined = undefined;
     if (authorId) {
       const prof = await this.prisma.profile.findUnique({ where: { id: authorId } });
       safeAuthorId = prof ? authorId : undefined;
     }
-    // Strip field UI-only (category, author) yang tidak ada di schema DB
-    const { category: _cat, author: _aut, ...prismaData } = dto;
     return this.prisma.news.create({
-      data: { ...prismaData, slug, authorId: safeAuthorId },
+      data: { ...dto, slug, authorId: safeAuthorId },
     });
   }
 
+  // SAMA PENTINGNYA: update() juga TIDAK BOLEH buang category/author.
+  // Ini yang paling mungkin jadi penyebab bug Anda -- kalau versi lama
+  // masih ke-deploy di sini, isi Penulis yang Anda ketik saat EDIT
+  // akan hilang lagi walau sudah benar diketik di form.
   async update(id: string, dto: UpdateNewsDto) {
     await this.getById(id);
-    // Strip field UI-only (category, author) yang tidak ada di schema DB
-    const { category: _cat, author: _aut, ...rest } = dto;
-    const data: any = { ...rest };
+    const data: any = { ...dto };
     if (dto.title) {
       data.slug = await this.uniqueSlug(this.slugify(dto.title), id);
     }

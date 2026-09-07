@@ -496,29 +496,6 @@ export const DashboardPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Galeri kegiatan -- grid rapi, bukan lagi satu foto polos */}
-            {featuredPadukuhan.gallery.length > 0 && (
-              <div className="mt-14">
-                <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#72b841]">
-                  Dokumentasi Kegiatan
-                </p>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  {featuredPadukuhan.gallery.slice(0, 8).map((img) => (
-                    <div
-                      key={img.id}
-                      className="group aspect-square overflow-hidden rounded-[18px] border border-[#e5ecdf] shadow-[0_8px_20px_rgba(16,23,8,0.06)]"
-                    >
-                      <img
-                        src={img.imageUrl}
-                        alt={img.caption ?? featuredPadukuhan.name}
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </section>
       )}

@@ -41,7 +41,7 @@ async function main() {
           'Survei awal Tim PPK Ormawa RDC bersama Kelompok Tani Karangtengah, Juni 2026',
         kerugianTarget: 'Target Tujuan 1 subproposal PPK Ormawa 2026',
         hargaGabahPerKg:
-          'GANTI: sebutkan sumbernya, mis. harga GKP tingkat petani Kab. Bantul menurut Dinas Pertanian dan Pangan, Agustus 2026',
+          'Dinas Ketahanan Pangan dan Pertanian (DKPP)',
         luasTotalHa: 'Data luas baku sawah Kalurahan Karangtengah',
         produktivitas: 'Metode ubinan 2,5 x 2,5 m, dihitung dari tabel harvest_records',
       },

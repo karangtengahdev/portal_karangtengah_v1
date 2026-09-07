@@ -3,6 +3,7 @@ import { IconArrowLeft, IconCalendarEvent, IconEye } from '@tabler/icons-react';
 
 import { usePublicBeritaDetail } from '../hooks/useBerita';
 import { formatBeritaDate, formatViews } from '../utils/formatBerita';
+import { ShareButtons } from '../components/ShareButtons';
 
 const PLACEHOLDER_IMAGE = 'https://placehold.co/1200x600/e9f1e2/72b841?text=Desa+Karangtengah';
 
@@ -45,6 +46,10 @@ export const BeritaDetailPage = () => {
     );
   }
 
+  // URL absolut halaman ini -- dipakai tombol share (WA/FB/Twitter perlu
+  // link lengkap dgn domain, bukan cuma path relatif).
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+
   return (
     <div className="min-h-screen bg-[#fbfcf8] px-4 pb-24 pt-8 text-[#101708] sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[900px]">
@@ -66,15 +71,19 @@ export const BeritaDetailPage = () => {
             {berita.title}
           </h1>
           
-          <div className="mt-6 flex flex-wrap items-center gap-5 text-sm font-medium text-[#6C757D] pb-6 border-b border-[#e5ecdf]">
-            <span className="inline-flex items-center gap-2">
-              <IconCalendarEvent size={18} />
-              {formatBeritaDate(berita.publishedAt)}
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <IconEye size={18} />
-              {formatViews(berita.views || 0)} kali dilihat
-            </span>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#e5ecdf]">
+            <div className="flex flex-wrap items-center gap-5 text-sm font-medium text-[#6C757D]">
+              <span className="inline-flex items-center gap-2">
+                <IconCalendarEvent size={18} />
+                {formatBeritaDate(berita.publishedAt)}
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <IconEye size={18} />
+                {formatViews(berita.views || 0)} kali dilihat
+              </span>
+            </div>
+
+            <ShareButtons title={berita.title} url={shareUrl} />
           </div>
         </header>
 
@@ -87,20 +96,14 @@ export const BeritaDetailPage = () => {
           />
         </div>
 
-        {/* Ringkasan (lead paragraph) -- ditampilkan terpisah, LEBIH TEBAL,
-            di atas isi lengkap. Ini beda dari isi lengkap (content) di
-            bawahnya -- sebelumnya excerpt ini yang KELIRU dipakai sebagai
-            satu-satunya isi artikel. */}
+        {/* Ringkasan (lead paragraph) */}
         {berita.excerpt && (
           <p className="mb-6 text-lg font-semibold leading-relaxed text-[#1C2620]">
             {berita.excerpt}
           </p>
         )}
 
-        {/* Isi Konten Berita LENGKAP -- ini yang sebelumnya hilang/salah
-            tampil. Backend simpan sebagai HTML/markdown (lihat README),
-            jadi tetap pakai dangerouslySetInnerHTML, tapi sumbernya
-            SEKARANG content, bukan excerpt. */}
+        {/* Isi Konten Berita LENGKAP */}
         <article className="prose prose-lg max-w-none text-[#3d453b] prose-p:leading-relaxed prose-headings:text-[#101708] prose-a:text-[#4f842f]">
           {berita.content ? (
             <div dangerouslySetInnerHTML={{ __html: berita.content }} />
@@ -110,6 +113,12 @@ export const BeritaDetailPage = () => {
             </p>
           )}
         </article>
+
+        {/* Share sekali lagi di bawah artikel -- pembaca yang selesai
+            baca sampai akhir kadang baru terpikir mau bagikan. */}
+        <div className="mt-12 border-t border-[#e5ecdf] pt-6">
+          <ShareButtons title={berita.title} url={shareUrl} />
+        </div>
       </div>
     </div>
   );

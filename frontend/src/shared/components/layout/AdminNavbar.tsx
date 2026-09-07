@@ -1,16 +1,14 @@
-// import { useNavigate } from 'react-router-dom';
 import { IconBell, IconSearch } from '@tabler/icons-react';
 
-// import { useAuth } from '../../../app/providers/AuthContext';
+import { useAuth } from '../../../app/providers/AuthContext';
 
-export const NawasenaNavbar = () => {
-  // const navigate = useNavigate();
-  // const { logout } = useAuth();
-
-  // const handleLogout = () => {
-  //   logout();
-  //   navigate('/login', { replace: true });
-  // };
+// Dulu bernama NawasenaNavbar, tinggal di features/nawasena/components/.
+// Dipindah ke sini krn dipakai bersama Portal admin & Nawasena admin.
+// Label breadcrumb & badge mobile sekarang ikut role yg login --
+// sebelumnya hardcode "Nawasena", jadi salah kalau muncul di area Portal.
+export const AdminNavbar = () => {
+  const { role } = useAuth();
+  const areaLabel = role === 'portal' ? 'Portal' : 'Nawasena';
 
   return (
     <header className="sticky top-0 z-20 h-13 border-b border-neutral-200 bg-white/95 backdrop-blur">
@@ -18,15 +16,15 @@ export const NawasenaNavbar = () => {
 
         {/* Breadcrumb — hanya di desktop */}
         <nav className="hidden flex-1 items-center gap-2 text-[12.5px] text-neutral-400 lg:flex">
-          <span>Panellll</span>
+          <span>Panel</span>
           <span className="text-neutral-300">/</span>
-          <span className="font-medium text-neutral-900">Dashboardddddd</span>
+          <span className="font-medium text-neutral-900">Dashboard</span>
         </nav>
 
         {/* Logo ringkas untuk mobile (sidebar tidak tampil) */}
         <div className="flex flex-1 items-center gap-2 lg:hidden">
           <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
-            Nawasena
+            {areaLabel}
           </span>
           <span className="text-neutral-200">/</span>
           <span className="text-sm font-medium text-neutral-900">Dashboard</span>
@@ -53,7 +51,6 @@ export const NawasenaNavbar = () => {
             type="button"
           >
             <IconBell size={16} />
-            {/* dot notifikasi */}
             <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-orange-500 ring-2 ring-white" />
           </button>
         </div>

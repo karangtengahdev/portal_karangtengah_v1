@@ -17,7 +17,7 @@ import { useEffect, useRef, useState, useMemo } from 'react';import {
 import { Link } from 'react-router-dom';
 
 import { usePublicBerita } from '../../../portal/berita/hooks/useBerita';
-import { formatBeritaDate } from '../../../nawasena/berita/utils/formatBerita';
+import { formatBeritaDate } from '../../berita/utils/formatBerita';
 import kepalaDesaImage from '../../../../assets/kepala-desa.png';
 import villageSawahImage from '../../../../assets/karangtengah-sawah.jpg';
 import pemudaDesaImage from '../../../../assets/pemuda-desa.png';
@@ -55,8 +55,6 @@ const stats = [
     title: 'Wilayah',
     value: '24/6',
     unit: 'RT/RW',
-    // secondaryValue: '6',
-    // secondaryUnit: 'RW',
     icon: IconBuildingCommunity,
   },
 ];
@@ -345,13 +343,6 @@ export const DashboardPage = () => {
                   <div className="village-stat-value">
                     <strong>{item.value}</strong>
                     <span>{item.unit}</span>
-                    {/* {'secondaryValue' in item ? (
-                      <>
-                        <em aria-hidden="true" />
-                        <strong>{item.secondaryValue}</strong>
-                        <span>{item.secondaryUnit}</span>
-                      </>
-                    ) : null} */}
                   </div>
                   <span className="village-stat-accent" />
                   <p className="village-stat-label">{item.title}</p>
@@ -571,9 +562,7 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="relative min-h-[420px] overflow-hidden rounded-[36px] -top-30">  {/* bg-white */}
-            {/* <div className="absolute inset-x-8 bottom-8 top-28 rounded-[32px] bg-[linear-gradient(180deg,#72b841_0%,#5fa333_100%)]" />
-            <div className="absolute -right-20 top-8 h-64 w-64 rounded-full bg-[#e9efdc]/80 blur-3xl" /> */}
+          <div className="relative min-h-[420px] overflow-hidden rounded-[36px] -top-30">
             <img
               alt="Pemuda Desa Karang Tengah"
               className="relative z-10 mx-auto h-full min-h-[420px] w-full object-contain object-bottom"
@@ -623,7 +612,6 @@ export const DashboardPage = () => {
                   key={item.id}
                   to={`/berita/${item.slug}`}
                 >
-                  {/* Gambar */}
                   <div className="relative w-full overflow-hidden bg-[#eef3e8]">
                     <img
                       alt={item.title}
@@ -633,7 +621,6 @@ export const DashboardPage = () => {
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,23,8,0)_18%,rgba(16,23,8,0.15)_48%,rgba(16,23,8,0.55)_100%)]" />
                   </div>
 
-                  {/* Box info — transparan buram */}
                   <div className="absolute inset-x-2 bottom-2 rounded-[11px] bg-white/70 p-3 text-[#101708] shadow-[0_8px_24px_rgba(0,0,0,0.10)] backdrop-blur-md sm:inset-x-3 sm:bottom-3 sm:rounded-[14px] sm:p-5">
                     <h3 className="mt-1 line-clamp-2 text-[10px] font-bold leading-tight text-[#101708] sm:mt-2 sm:text-lg">
                       {item.title}

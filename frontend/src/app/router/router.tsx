@@ -3,9 +3,9 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { ProtectedRouter } from './ProtectedRouter';
 import { LoginPage } from '../../features/auth/pages/LoginPage';
 import { RegisterPage } from '../../features/auth/pages/RegisterPage';
-import { AdminBeritaPage } from '../../features/nawasena/berita/pages/AdminBeritaPage';
+import { AdminBeritaPage } from '../../features/portal-admin/berita/pages/AdminBeritaPage';
 import { DashboardNawasenaPage } from '../../features/nawasena/dashboard/pages/DashboardNawasenaPage';
-import { NawasenaLayout } from '../../features/nawasena/layout/NawasenaLayout';
+import { AdminLayout } from '../../shared/components/layout/AdminLayout';
 import { DashboardPortalPage } from '../../features/portal-admin/dashboard/pages/DashboardPortalPage';
 import { BeritaPage as PortalBeritaPage } from '../../features/portal/berita/pages/BeritaPage';
 import { DashboardPage } from '../../features/portal/dashboard/pages/DashboardPage';
@@ -15,10 +15,10 @@ import { NawasenaPage } from '../../features/portal/nawasena/pages/NawasenaPage'
 import { PertanianPage } from '../../features/portal/pertanian/pages/PertanianPage';
 import { UmkmPage } from '../../features/portal/umkm/pages/UmkmPage';
 import { DashboardLayout } from '../../shared/components/layout/DashboardLayout';
-import { AdminUmkmPage } from '../../features/nawasena/umkm/pages/AdminUmkmPage';
+import { AdminUmkmPage } from '../../features/portal-admin/umkm/pages/AdminUmkmPage';
 import { AdminSchedulePage } from '../../features/nawasena/schedule/pages/AdminSchedulePage';
 import { AdminHarvestPage } from '../../features/nawasena/harvest/pages/AdminHarvestPage';
-import { AdminVillagePage } from '../../features/nawasena/village/pages/AdminVillagePage';
+import { AdminVillagePage } from '../../features/portal-admin/village/pages/AdminVillagePage';
 import { BeritaDetailPage } from '../../features/portal/berita/pages/BeritaDetailPage';
 import { AdminPlantingSchedulePage } from '../../features/nawasena/planting-schedule/pages/AdminPlantingSchedulePage';
 import { JadwalTanamPage } from '../../features/portal/pertanian/pages/JadwalTanamPage';
@@ -44,15 +44,14 @@ export const router = createBrowserRouter([
   },
 
   // ============ AREA PORTAL ADMIN (pemuda -- role: portal) ============
-  // Kelola konten publik: Berita, UMKM, Profil Desa. Kalau akun dgn
-  // role 'nawasena' coba masuk sini, ProtectedRouter otomatis lempar
-  // balik ke area Nawasena miliknya sendiri (bukan ditolak mentah2).
+  // Berita, UMKM, Profil Desa -- file-nya SEKARANG benar-benar di
+  // features/portal-admin/, bukan lagi nyasar di features/nawasena/.
   {
     path: '/portal-admin',
     element: <ProtectedRouter allowedRoles={['portal']} />,
     children: [
       {
-        element: <NawasenaLayout />,
+        element: <AdminLayout />,
         children: [
           { index: true, element: <DashboardPortalPage /> },
           { path: 'berita', element: <AdminBeritaPage /> },
@@ -64,13 +63,14 @@ export const router = createBrowserRouter([
   },
 
   // ============ AREA NAWASENA ADMIN (tim teknologi -- role: nawasena) ============
-  // Kelola data teknis pertanian: Jadwal Tanam, Data Panen, Jadwal.
+  // Jadwal Tanam, Data Panen, Jadwal -- tetap di features/nawasena/,
+  // ini memang sudah benar dari awal.
   {
     path: '/nawasena-admin',
     element: <ProtectedRouter allowedRoles={['nawasena']} />,
     children: [
       {
-        element: <NawasenaLayout />,
+        element: <AdminLayout />,
         children: [
           { index: true, element: <DashboardNawasenaPage /> },
           { path: 'schedule', element: <AdminSchedulePage /> },

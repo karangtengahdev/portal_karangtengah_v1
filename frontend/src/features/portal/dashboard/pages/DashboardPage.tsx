@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, useMemo } from 'react';import {
+import { useEffect, useRef, useState, useMemo } from 'react';
+import {
   IconArrowRight,
   IconBuildingCommunity,
   IconBuildingStore,
@@ -16,7 +17,9 @@ import { useEffect, useRef, useState, useMemo } from 'react';import {
 } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 
-import { usePublicBerita } from '../../../portal/berita/hooks/useBerita';
+import { usePublicBerita } from '../../berita/hooks/useBerita';
+import { usePublicVillage } from '../../village/hooks/useVillage';
+import { usePublicPadukuhan } from '../../padukuhan/hooks/usePadukuhan';
 import { formatBeritaDate } from '../../berita/utils/formatBerita';
 import kepalaDesaImage from '../../../../assets/kepala-desa.png';
 import villageSawahImage from '../../../../assets/karangtengah-sawah.jpg';
@@ -25,39 +28,6 @@ import layananInfoDesaImage from '../../../../assets/services/layanan-info-desa.
 import layananPertanianImage from '../../../../assets/services/layanan-pertanian.png';
 import layananSuratWargaImage from '../../../../assets/services/layanan-surat-warga.png';
 import layananUmkmImage from '../../../../assets/services/layanan-umkm.png';
-
-const stats = [
-  {
-    title: 'Jumlah Penduduk',
-    value: '3.250',
-    unit: 'Jiwa',
-    icon: IconUsers,
-  },
-  {
-    title: 'Kepala Keluarga',
-    value: '890',
-    unit: 'KK',
-    icon: IconHomeStats,
-  },
-  {
-    title: 'Luas Sawah',
-    value: '78',
-    unit: 'Ha',
-    icon: IconWheat,
-  },
-  {
-    title: 'Luas Wilayah',
-    value: '125',
-    unit: 'Ha',
-    icon: IconMapPin,
-  },
-  {
-    title: 'Wilayah',
-    value: '24/6',
-    unit: 'RT/RW',
-    icon: IconBuildingCommunity,
-  },
-];
 
 const serviceCards = [
   {
@@ -166,10 +136,7 @@ const AnimatedNumber = ({
     hasStartedRef.current = false;
 
     const startAnimation = () => {
-      if (hasStartedRef.current) {
-        return;
-      }
-
+      if (hasStartedRef.current) return;
       hasStartedRef.current = true;
 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -178,44 +145,32 @@ const AnimatedNumber = ({
       }
 
       const startedAt = performance.now();
-
       const animate = (timestamp: number) => {
         const progress = Math.min((timestamp - startedAt) / duration, 1);
         const easedProgress = 1 - Math.pow(1 - progress, 3);
-
         setDisplayValue(Math.round(value * easedProgress));
-
-        if (progress < 1) {
-          frameRef.current = requestAnimationFrame(animate);
-        }
+        if (progress < 1) frameRef.current = requestAnimationFrame(animate);
       };
-
       frameRef.current = requestAnimationFrame(animate);
     };
 
     const element = elementRef.current;
-
     if (!element || !('IntersectionObserver' in window)) {
       startAnimation();
       return undefined;
     }
 
     let observer: IntersectionObserver | null = null;
-
     const isElementVisible = () => {
       const rect = element.getBoundingClientRect();
-      const viewportHeight =
-        window.innerHeight || document.documentElement.clientHeight;
-
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
       return rect.top < viewportHeight * 0.9 && rect.bottom > 0;
     };
-
     const stopWatching = () => {
       observer?.disconnect();
       window.removeEventListener('scroll', handleVisibilityCheck);
       window.removeEventListener('resize', handleVisibilityCheck);
     };
-
     const handleVisibilityCheck = () => {
       if (isElementVisible()) {
         startAnimation();
@@ -234,18 +189,13 @@ const AnimatedNumber = ({
     );
 
     observer.observe(element);
-    window.addEventListener('scroll', handleVisibilityCheck, {
-      passive: true,
-    });
+    window.addEventListener('scroll', handleVisibilityCheck, { passive: true });
     window.addEventListener('resize', handleVisibilityCheck);
     requestAnimationFrame(handleVisibilityCheck);
 
     return () => {
       stopWatching();
-
-      if (frameRef.current) {
-        cancelAnimationFrame(frameRef.current);
-      }
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
     };
   }, [duration, value]);
 
@@ -262,10 +212,48 @@ const PLACEHOLDER_IMAGE = 'https://placehold.co/800x450/e9f1e2/72b841?text=Desa+
 
 export const DashboardPage = () => {
   const { data: beritaItems, isLoading: isBeritaLoading } = usePublicBerita();
+  const { data: village } = usePublicVillage();
+  const { data: padukuhanList } = usePublicPadukuhan();
 
-  const homepageBerita = useMemo(() => {
-    return beritaItems.slice(0, 6);
-  }, [beritaItems]);
+  const homepageBerita = useMemo(() => beritaItems.slice(0, 6), [beritaItems]);
+
+  const featuredPadukuhan = useMemo(
+    () => padukuhanList.find((p) => p.hasData) ?? null,
+    [padukuhanList],
+  );
+
+  const stats = [
+    {
+      title: 'Jumlah Penduduk',
+      value: village?.stats?.population?.toLocaleString('id-ID') ?? '-',
+      unit: 'Jiwa',
+      icon: IconUsers,
+    },
+    {
+      title: 'Kepala Keluarga',
+      value: village?.stats?.families?.toLocaleString('id-ID') ?? '-',
+      unit: 'KK',
+      icon: IconHomeStats,
+    },
+    {
+      title: 'Luas Wilayah',
+      value: village?.stats?.area_ha?.toLocaleString('id-ID') ?? '-',
+      unit: 'Ha',
+      icon: IconWheat,
+    },
+    {
+      title: 'Keluarga Petani',
+      value: village?.stats?.farmer_families?.toLocaleString('id-ID') ?? '-',
+      unit: 'KK',
+      icon: IconMapPin,
+    },
+    {
+      title: 'Padukuhan',
+      value: '6',
+      unit: 'Dusun',
+      icon: IconBuildingCommunity,
+    },
+  ];
 
   return (
     <div className="bg-white">
@@ -304,7 +292,7 @@ export const DashboardPage = () => {
                       to="/infografis"
                     >
                       <span className="text-white">See Infografis</span>
-                      <IconArrowRight size={16}  className="text-white"/>
+                      <IconArrowRight size={16} className="text-white" />
                     </Link>
 
                     <Link
@@ -321,7 +309,7 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        {/* ini section statistik */}
+        {/* Statistik -- sekarang dari data Profil Desa asli */}
         <div className="village-stats-wrap">
           <section aria-labelledby="village-stats-title" className="village-stats-panel">
             <div className="village-stats-heading">
@@ -331,7 +319,7 @@ export const DashboardPage = () => {
                 <IconLeaf size={16} stroke={1.7} />
                 <span />
               </div>
-              <p>Gambaran singkat wilayah, penduduk, dan potensi desa.</p>
+              <p>Gambaran singkat wilayah, penduduk, dan potensi Kalurahan Karangtengah.</p>
             </div>
 
             <div className="village-stats-grid">
@@ -353,16 +341,17 @@ export const DashboardPage = () => {
         </div>
       </section>
 
+      {/* Sambutan Lurah -- data asli (nama), TANPA kutipan karangan.
+          Sebelumnya ada blockquote atas nama "Ahmad Pratama" (nama
+          contoh) -- itu dihapus krn sekarang nama Lurah SUNGGUHAN
+          (Haryanto) yang tampil, dan tidak etis menaruh kata-kata
+          rekaan atas nama orang sungguhan. Ganti teks resmi asli
+          begitu tersedia (lewat CMS Profil Desa). */}
       <section className="leadership-section -mt-9">
         <div className="leadership-bottom-wave" />
         <div className="leadership-dot-pattern" />
 
-        <svg
-          aria-hidden="true"
-          className="leadership-topography"
-          fill="none"
-          viewBox="0 0 300 300"
-        >
+        <svg aria-hidden="true" className="leadership-topography" fill="none" viewBox="0 0 300 300">
           <path d="M22 88c44-54 126-72 190-35 42 25 62 75 45 118-18 46-70 74-123 68-54-7-95-47-105-94-4-20-1-40 11-57" />
           <path d="M26 98c34-42 99-56 150-27 34 20 50 59 37 93-14 36-55 59-97 54-43-5-76-37-84-75-3-16 0-31 9-45" />
           <path d="M72 108c25-30 72-40 109-19 25 15 37 44 27 69-10 27-40 44-72 40-31-4-56-27-62-55-2-12 0-24 7-35" />
@@ -375,17 +364,9 @@ export const DashboardPage = () => {
             <div className="leadership-portrait-area">
               <div className="leadership-portrait-circle" />
               <div className="leadership-landscape-shape">
-                <img
-                  alt=""
-                  className="h-full w-full object-cover object-center"
-                  src={villageSawahImage}
-                />
+                <img alt="" className="h-full w-full object-cover object-center" src={villageSawahImage} />
               </div>
-              <img
-                alt="Kepala Desa Karang Tengah"
-                className="leadership-leader-image"
-                src={kepalaDesaImage}
-              />
+              <img alt="Lurah Karangtengah" className="leadership-leader-image" src={kepalaDesaImage} />
               <div className="leadership-portrait-badge">
                 <span className="leadership-portrait-badge-icon">
                   <IconLeaf size={28} stroke={1.8} />
@@ -400,7 +381,7 @@ export const DashboardPage = () => {
             <div className="leadership-content">
               <p className="leadership-eyebrow">
                 <IconLeaf size={14} stroke={1.9} />
-                <span>Sambutan Kepala Desa</span>
+                <span>Kalurahan Karangtengah</span>
               </p>
               <h2 className="leadership-title">
                 Membangun Karang Tengah
@@ -410,41 +391,24 @@ export const DashboardPage = () => {
               </h2>
 
               <p className="leadership-copy">
-                Selamat datang di portal resmi Desa Karang Tengah. Kami hadir
-                dengan semangat keterbukaan informasi, pelayanan yang mudah, dan
-                komitmen untuk terus mendorong kemajuan desa melalui kolaborasi
-                dan gotong royong.
+                {village?.description ||
+                  'Kalurahan Karangtengah, Kapanewon Imogiri, Kabupaten Bantul, terdiri atas 6 padukuhan yang terus mendorong keterbukaan informasi dan pelayanan warga yang lebih mudah dijangkau.'}
               </p>
 
-              <figure className="leadership-quote-card">
-                <span className="leadership-quote-mark">&ldquo;</span>
-                <blockquote>
-                  Kami ingin Karang Tengah tumbuh sebagai desa yang terbuka,
-                  tertata, dan mampu mengangkat potensi warganya melalui
-                  informasi yang mudah dijangkau dan pelayanan yang tulus.
-                </blockquote>
-                <figcaption className="leadership-author">
-                  <span className="leadership-signature">Ahmad Pratama</span>
-                  <span className="leadership-author-divider" />
-                  <span>
-                    <strong>Ahmad Pratama</strong>
-                    <small>Kepala Desa Karang Tengah</small>
-                  </span>
-                </figcaption>
-              </figure>
+              <div className="leadership-quote-card">
+                <p className="text-sm leading-6 text-[#3d453b]">
+                  Portal ini dikelola untuk mendukung transparansi informasi dan pelayanan
+                  warga Kalurahan Karangtengah, di bawah kepemimpinan Lurah{' '}
+                  <strong>{village?.lurahName || 'Karangtengah'}</strong>.
+                </p>
+              </div>
 
               <div className="leadership-cta-group">
-                <Link
-                  className="leadership-button leadership-button-primary"
-                  to="/infografis"
-                >
+                <Link className="leadership-button leadership-button-primary" to="/infografis">
                   <IconMap2 size={17} stroke={1.8} />
                   Jelajahi Profil Desa
                 </Link>
-                <Link
-                  className="leadership-button leadership-button-secondary"
-                  to="/kontak"
-                >
+                <Link className="leadership-button leadership-button-secondary" to="/kontak">
                   <IconFileCheck size={17} stroke={1.8} />
                   Layanan untuk Warga
                 </Link>
@@ -454,10 +418,7 @@ export const DashboardPage = () => {
 
           <div className="leadership-value-grid">
             {leadershipValues.map((item) => (
-              <article
-                className="leadership-value-card"
-                key={item.title}
-              >
+              <article className="leadership-value-card" key={item.title}>
                 <span className="leadership-value-icon">
                   <item.icon size={34} stroke={1.7} />
                 </span>
@@ -474,6 +435,48 @@ export const DashboardPage = () => {
         </div>
       </section>
 
+      {/* SOROTAN PADUKUHAN -- tampil HANYA kalau ada padukuhan dgn
+          hasData=true (sekarang: Karangtengah). Kalau belum ada satu
+          pun yang diisi, section ini otomatis tidak muncul sama
+          sekali -- bukan menampilkan kartu kosong. */}
+      {featuredPadukuhan && (
+        <section className="px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[1440px] rounded-[32px] bg-[#F7F7F4] p-6 sm:p-10">
+            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#72b841]">
+              <IconBuildingCommunity size={16} stroke={1.9} />
+              Sorotan Padukuhan
+            </p>
+            <h2 className="mt-2 text-2xl font-extrabold leading-tight text-[#101708] sm:text-3xl">
+              Padukuhan {featuredPadukuhan.name}
+            </h2>
+            {featuredPadukuhan.kepalaDukuh && (
+              <p className="mt-1 text-sm font-semibold text-[#4f842f]">
+                Kepala Dukuh: {featuredPadukuhan.kepalaDukuh}
+              </p>
+            )}
+            {featuredPadukuhan.sambutan && (
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-[#555555] sm:text-base">
+                {featuredPadukuhan.sambutan}
+              </p>
+            )}
+
+            {featuredPadukuhan.gallery.length > 0 && (
+              <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {featuredPadukuhan.gallery.slice(0, 8).map((img) => (
+                  <div key={img.id} className="aspect-square overflow-hidden rounded-[14px] bg-[#eef3e8]">
+                    <img
+                      src={img.imageUrl}
+                      alt={img.caption ?? featuredPadukuhan.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-[1440px]">
           <div className="mx-auto max-w-4xl text-center">
@@ -483,36 +486,30 @@ export const DashboardPage = () => {
           </div>
 
           <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {serviceCards.map((service, index) => (
-          <article
-            className="flex min-h-[260px] flex-col rounded-lg bg-[#F7F7F4] p-3 shadow-[0_10px_30px_rgba(16,23,8,0.05)] ring-1 ring-black/[0.03] sm:min-h-[390px] sm:p-5"
-            key={service.title}
-          >
-            <div className={index % 2 === 0 ? 'mt-4 sm:mt-12' : ''}>
-              <img
-                alt={service.imageAlt}
-                className={[
-                  'aspect-[16/10] h-[90px] w-full rounded-md object-cover sm:h-auto',
-                  service.imageClassName,
-                ].join(' ')}
-                src={service.image}
-              />
-            </div>
-
-            <h3 className="service-card-title mt-3 text-sm font-bold leading-tight text-[#101708] sm:mt-5 sm:text-xl">
-              {service.title}
-            </h3>
-
-            <p className="mt-2 text-xs leading-5 text-[#555555] sm:mt-3 sm:text-sm sm:leading-6">
-              {service.detail}
-            </p>
-          </article>
-        ))}
-      </div>
+            {serviceCards.map((service, index) => (
+              <article
+                className="flex min-h-[260px] flex-col rounded-lg bg-[#F7F7F4] p-3 shadow-[0_10px_30px_rgba(16,23,8,0.05)] ring-1 ring-black/[0.03] sm:min-h-[390px] sm:p-5"
+                key={service.title}
+              >
+                <div className={index % 2 === 0 ? 'mt-4 sm:mt-12' : ''}>
+                  <img
+                    alt={service.imageAlt}
+                    className={['aspect-[16/10] h-[90px] w-full rounded-md object-cover sm:h-auto', service.imageClassName].join(' ')}
+                    src={service.image}
+                  />
+                </div>
+                <h3 className="service-card-title mt-3 text-sm font-bold leading-tight text-[#101708] sm:mt-5 sm:text-xl">
+                  {service.title}
+                </h3>
+                <p className="mt-2 text-xs leading-5 text-[#555555] sm:mt-3 sm:text-sm sm:leading-6">
+                  {service.detail}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Pertumbuhan Desa */}
       <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 -mt-15">
         <div className="mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
           <div>
@@ -545,18 +542,16 @@ export const DashboardPage = () => {
                         value={item.value}
                       />
                       {'unit' in item ? (
-                        <span className="text-xs font-bold text-[#27441d] sm:text-lg">
-                          {item.unit}
-                        </span>
+                        <span className="text-xs font-bold text-[#27441d] sm:text-lg">{item.unit}</span>
                       ) : null}
                     </div>
                   </div>
                   <h3 className="mt-2 text-[11px] font-semibold leading-tight text-[#212529] sm:mt-4 sm:text-base">
                     {item.label}
                   </h3>
-            <p className="mt-1 text-[10px] leading-4 text-[#6C757D] sm:mt-2 sm:text-sm sm:leading-6">
-              {item.detail}
-            </p>
+                  <p className="mt-1 text-[10px] leading-4 text-[#6C757D] sm:mt-2 sm:text-sm sm:leading-6">
+                    {item.detail}
+                  </p>
                 </article>
               ))}
             </div>
@@ -572,7 +567,6 @@ export const DashboardPage = () => {
         </div>
       </section>
 
-      {/* Bagian Berita Utama Dashboard */}
       <section className="px-4 py-16 sm:px-6 lg:px-8 -mt-30">
         <div className="mx-auto max-w-[1440px]">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -598,10 +592,7 @@ export const DashboardPage = () => {
           {isBeritaLoading ? (
             <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3">
               {Array.from({ length: 6 }).map((_, index) => (
-                <div
-                  className="animate-pulse rounded-[16px] bg-[#eef3e8] min-h-[220px] sm:min-h-[300px]"
-                  key={`berita-skeleton-${index}`}
-                />
+                <div className="animate-pulse rounded-[16px] bg-[#eef3e8] min-h-[220px] sm:min-h-[300px]" key={`berita-skeleton-${index}`} />
               ))}
             </div>
           ) : homepageBerita.length > 0 ? (
@@ -620,7 +611,6 @@ export const DashboardPage = () => {
                     />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,23,8,0)_18%,rgba(16,23,8,0.15)_48%,rgba(16,23,8,0.55)_100%)]" />
                   </div>
-
                   <div className="absolute inset-x-2 bottom-2 rounded-[11px] bg-white/70 p-3 text-[#101708] shadow-[0_8px_24px_rgba(0,0,0,0.10)] backdrop-blur-md sm:inset-x-3 sm:bottom-3 sm:rounded-[14px] sm:p-5">
                     <h3 className="mt-1 line-clamp-2 text-[10px] font-bold leading-tight text-[#101708] sm:mt-2 sm:text-lg">
                       {item.title}
@@ -634,15 +624,11 @@ export const DashboardPage = () => {
             </div>
           ) : (
             <div className="mt-8 rounded-[16px] border border-dashed border-[#b9d8a4] bg-[#f7fbf3] px-6 py-10 text-center">
-              <p className="text-sm font-semibold text-[#4f842f]">
-                Belum ada berita terbit untuk ditampilkan.
-              </p>
+              <p className="text-sm font-semibold text-[#4f842f]">Belum ada berita terbit untuk ditampilkan.</p>
             </div>
           )}
         </div>
       </section>
-
-
     </div>
   );
 };

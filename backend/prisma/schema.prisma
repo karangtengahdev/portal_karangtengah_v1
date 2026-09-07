@@ -16,44 +16,41 @@ datasource db {
 // INTERNAL / PROGRAM
 // ============================================================
 
-// Mirror profil user. id = auth.users.id (UUID dari Supabase Auth).
 model Profile {
   id        String   @id @db.Uuid
   email     String?  @unique
   fullName  String?  @map("full_name")
-  role      String   @default("operator") // admin | operator | viewer
+  role      String   @default("operator")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  news       News[]
+  news News[]
   musimTanam MusimTanam[]
 
   @@map("profiles")
 }
 
-// Device terdaftar (Trap / Rover / Bridge)
 model Device {
   id        String   @id @default(uuid()) @db.Uuid
-  deviceId  String   @unique @map("device_id") // contoh TRAP-01, ROVER-01
-  type      String // trap | rover | bridge
+  deviceId  String   @unique @map("device_id")
+  type      String
   name      String?
-  status    String   @default("offline") // online | offline
+  status    String   @default("offline")
   meta      Json?
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  telemetry  Telemetry[]
-  trapEvents TrapEvent[]
-  roverOps   RoverOperation[]
+  telemetry      Telemetry[]
+  trapEvents     TrapEvent[]
+  roverOps       RoverOperation[]
 
   @@map("devices")
 }
 
-// Telemetri umum (semua device kirim ke sini via Bridge)
 model Telemetry {
-  id         String   @id @default(uuid()) @db.Uuid
-  deviceId   String   @map("device_id") // text, cocok dgn Device.deviceId
-  payload    Json
+  id        String   @id @default(uuid()) @db.Uuid
+  deviceId  String   @map("device_id")
+  payload   Json
   recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
 
   device Device? @relation(fields: [deviceId], references: [deviceId])
@@ -62,12 +59,11 @@ model Telemetry {
   @@map("telemetry")
 }
 
-// Event dari Trap (hama terdeteksi, dll)
 model TrapEvent {
-  id         String   @id @default(uuid()) @db.Uuid
-  deviceId   String   @map("device_id")
-  eventType  String   @map("event_type") // pest_detected | trap_triggered | status
-  data       Json?
+  id        String   @id @default(uuid()) @db.Uuid
+  deviceId  String   @map("device_id")
+  eventType String   @map("event_type")
+  data      Json?
   recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
 
   device Device? @relation(fields: [deviceId], references: [deviceId])
@@ -76,16 +72,15 @@ model TrapEvent {
   @@map("trap_events")
 }
 
-// Operasi Rover (patroli, posisi) - read-only monitoring
 model RoverOperation {
-  id         String   @id @default(uuid()) @db.Uuid
-  deviceId   String   @map("device_id")
-  lat        Float?
-  lng        Float?
-  heading    Float?
-  gpsFix     Boolean? @map("gps_fix")
-  sats       Int?
-  status     String? // patrolling | idle | charging
+  id        String   @id @default(uuid()) @db.Uuid
+  deviceId  String   @map("device_id")
+  lat       Float?
+  lng       Float?
+  heading   Float?
+  gpsFix    Boolean? @map("gps_fix")
+  sats      Int?
+  status    String?
   recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
 
   device Device? @relation(fields: [deviceId], references: [deviceId])
@@ -94,48 +89,45 @@ model RoverOperation {
   @@map("rover_operations")
 }
 
-// Jadwal tanam (Digital Farming Scheduler)
 model FieldSchedule {
-  id               String    @id @default(uuid()) @db.Uuid
-  farmerName       String    @map("farmer_name")
-  fieldName        String?   @map("field_name")
-  padukuhan        String?
-  plantDate        DateTime  @map("plant_date") @db.Date
+  id          String   @id @default(uuid()) @db.Uuid
+  farmerName  String   @map("farmer_name")
+  fieldName   String?  @map("field_name")
+  padukuhan   String?
+  plantDate   DateTime @map("plant_date") @db.Date
   estimatedHarvest DateTime? @map("estimated_harvest") @db.Date
-  status           String    @default("planned") // planned | planted | harvested
-  notes            String?
-  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  status      String   @default("planned")
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   notifications Notification[]
 
   @@map("field_schedules")
 }
 
-// Catatan panen + perhitungan ubinan (NAWASENA Calculating)
 model HarvestRecord {
-  id          String   @id @default(uuid()) @db.Uuid
-  farmerName  String   @map("farmer_name")
-  fieldName   String?  @map("field_name")
-  ubinanKg    Float    @map("ubinan_kg") // berat ubinan 2.5x2.5m
-  areaHa      Float    @map("area_ha")
-  yieldTonHa  Float?   @map("yield_ton_ha") // dihitung: ubinan_kg * 1.6
-  estimatedKg Float?   @map("estimated_kg")
-  pestLossPct Float?   @map("pest_loss_pct")
-  scheduleId  String?  @map("schedule_id") @db.Uuid
-  padukuhan   String?
-  harvestDate DateTime @map("harvest_date") @db.Date
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id           String   @id @default(uuid()) @db.Uuid
+  farmerName   String   @map("farmer_name")
+  fieldName    String?  @map("field_name")
+  ubinanKg     Float    @map("ubinan_kg")
+  areaHa       Float    @map("area_ha")
+  yieldTonHa   Float?   @map("yield_ton_ha")
+  estimatedKg  Float?   @map("estimated_kg")
+  pestLossPct  Float?   @map("pest_loss_pct")
+  scheduleId   String?  @map("schedule_id") @db.Uuid
+  padukuhan    String?
+  harvestDate  DateTime @map("harvest_date") @db.Date
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("harvest_records")
 }
 
-// Logbook kegiatan
 model LogbookEntry {
   id        String   @id @default(uuid()) @db.Uuid
   title     String
   body      String?
-  category  String? // teknis | non-teknis | admin
+  category  String?
   authorId  String?  @map("author_id") @db.Uuid
   entryDate DateTime @map("entry_date") @db.Date
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
@@ -143,16 +135,15 @@ model LogbookEntry {
   @@map("logbook_entries")
 }
 
-// Notifikasi (cron H-7/H-3/H-1)
 model Notification {
-  id         String    @id @default(uuid()) @db.Uuid
-  scheduleId String?   @map("schedule_id") @db.Uuid
-  channel    String    @default("whatsapp") // whatsapp | system
-  target     String? // nomor / user
+  id         String   @id @default(uuid()) @db.Uuid
+  scheduleId String?  @map("schedule_id") @db.Uuid
+  channel    String   @default("whatsapp")
+  target     String?
   message    String
-  status     String    @default("pending") // pending | sent | failed
+  status     String   @default("pending")
   sentAt     DateTime? @map("sent_at") @db.Timestamptz
-  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   schedule FieldSchedule? @relation(fields: [scheduleId], references: [id])
 
@@ -160,7 +151,7 @@ model Notification {
 }
 
 // ============================================================
-// PUBLIC CONTENT (modul baru)
+// PUBLIC CONTENT
 // ============================================================
 
 model News {
@@ -170,16 +161,9 @@ model News {
   excerpt     String?
   content     String
   coverUrl    String?   @map("cover_url")
-  // Kategori tampilan (mis. "Kegiatan", "Pengumuman") -- teks bebas,
-  // dipilih dari daftar tetap di form admin (lihat BERITA_CATEGORIES
-  // di frontend), bukan tabel referensi terpisah.
   category    String?
-  // Nama byline yang TAMPIL PUBLIK (mis. "Tim Redaksi") -- SENGAJA
-  // terpisah dari authorId di bawah. authorId = akun admin yang login
-  // saat membuat (untuk audit internal), author = nama yang mau
-  // ditampilkan ke pembaca, tidak harus sama & tidak perlu akun asli.
   author      String?
-  status      String    @default("draft") // draft | published
+  status      String    @default("draft")
   publishedAt DateTime? @map("published_at") @db.Timestamptz
   authorId    String?   @map("author_id") @db.Uuid
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
@@ -191,7 +175,6 @@ model News {
   @@map("news")
 }
 
-// Profil desa - singleton (1 baris)
 model Umkm {
   id             String   @id @default(uuid()) @db.Uuid
   name           String
@@ -212,18 +195,24 @@ model Umkm {
   @@map("umkm")
 }
 
+// Profil KALURAHAN (level keseluruhan desa, singleton -- 1 baris).
+// Dilengkapi lurahName supaya sambutan Lurah bisa tampil terpisah
+// dari sambutan tiap Kepala Dukuh (lihat model Padukuhan di bawah).
 model VillageProfile {
   id          String   @id @default(uuid()) @db.Uuid
+  lurahName   String?  @map("lurah_name")
   vision      String?
   mission     String?
   description String?
-  potency     Json? // [{title, desc}]
-  stats       Json? // {population, families, area_ha}
+  potency     Json?
+  stats       Json?
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("village_profile")
 }
 
+// Galeri foto level KALURAHAN (umum, tidak terikat padukuhan
+// tertentu -- mis. foto balai desa, kantor kalurahan).
 model VillageGallery {
   id         String   @id @default(uuid()) @db.Uuid
   imageUrl   String   @map("image_url")
@@ -232,6 +221,62 @@ model VillageGallery {
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("village_gallery")
+}
+
+// Satu baris PER PADUKUHAN (rencana 6 total, mulai dari 1 --
+// Karangtengah -- yang lain ditambah manual via CMS begitu datanya
+// tersedia). hasData jadi flag frontend: true = tampilkan penuh,
+// false = tampilkan "Segera Hadir" tanpa perlu hapus/sembunyikan
+// baris-nya dari daftar.
+model Padukuhan {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique
+  kepalaDukuh String?  @map("kepala_dukuh")
+  sambutan    String?
+  description String?
+  hasData     Boolean  @default(false) @map("has_data")
+  orderIndex  Int      @default(0) @map("order_index")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  gallery PadukuhanGallery[]
+
+  @@map("padukuhan")
+}
+
+model PadukuhanGallery {
+  id          String   @id @default(uuid()) @db.Uuid
+  padukuhanId String   @map("padukuhan_id") @db.Uuid
+  imageUrl    String   @map("image_url")
+  caption     String?
+  orderIndex  Int      @default(0) @map("order_index")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  padukuhan Padukuhan @relation(fields: [padukuhanId], references: [id], onDelete: Cascade)
+
+  @@index([padukuhanId])
+  @@map("padukuhan_gallery")
+}
+
+// Asumsi dasar perhitungan Dampak Ekonomi program NAWASENA (dipakai
+// halaman publik Pertanian > Dampak Ekonomi). Struktur field di sini
+// disamakan PERSIS dengan tabel yang sudah ada di database Anda --
+// jangan ubah tipe data / nama kolom tanpa migrasi terpisah.
+model AsumsiEkonomi {
+  id                   String   @id @default(uuid()) @db.Uuid
+  berlakuSejak         DateTime @map("berlaku_sejak") @db.Date
+  kerugianBaselineMin  Float    @map("kerugian_baseline_min")
+  kerugianBaselineMaks Float    @map("kerugian_baseline_maks")
+  kerugianTarget       Float    @map("kerugian_target")
+  hargaGabahPerKg      Int      @map("harga_gabah_per_kg")
+  luasPilotHa          Float    @map("luas_pilot_ha")
+  luasTotalHa          Float    @map("luas_total_ha")
+  padukuhanPilot       String   @map("padukuhan_pilot")
+  sumber               Json
+  dicatatOleh          String   @map("dicatat_oleh")
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("asumsi_ekonomi")
 }
 
 // ============================================================
@@ -268,9 +313,9 @@ model MusimTanam {
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz
 
-  komoditas Komoditas       @relation(fields: [komoditasId], references: [id])
-  createdBy Profile?        @relation(fields: [createdById], references: [id])
-  tahapan   TahapanJadwal[]
+  komoditas  Komoditas       @relation(fields: [komoditasId], references: [id])
+  createdBy  Profile?        @relation(fields: [createdById], references: [id])
+  tahapan    TahapanJadwal[]
 
   @@index([status])
   @@map("musim_tanam")
@@ -291,33 +336,4 @@ model TahapanJadwal {
 
   @@index([musimTanamId, urutan])
   @@map("tahapan_jadwal")
-}
-
-// Tambahkan HANYA blok ini ke backend/prisma/schema.prisma
-// Tidak ada perubahan pada model yang sudah ada — HarvestRecord dipakai apa adanya.
-
-/// Asumsi perhitungan dampak ekonomi, disimpan sebagai baris berversi.
-/// Setiap perubahan membuat baris baru sehingga angka lama tetap bisa ditelusuri.
-model AsumsiEkonomi {
-  id           String   @id @default(uuid()) @db.Uuid
-  berlakuSejak DateTime @map("berlaku_sejak") @db.Date
-
-  kerugianBaselineMin  Float @map("kerugian_baseline_min") // fraksi, mis. 0.20
-  kerugianBaselineMaks Float @map("kerugian_baseline_maks") // fraksi, mis. 0.30
-  kerugianTarget       Float @map("kerugian_target") // fraksi, mis. 0.15
-
-  hargaGabahPerKg Int   @map("harga_gabah_per_kg")
-  luasPilotHa     Float @map("luas_pilot_ha")
-  luasTotalHa     Float @map("luas_total_ha")
-
-  /// Nama padukuhan lahan pilot, dicocokkan dengan kolom padukuhan pada harvest_records.
-  padukuhanPilot String @map("padukuhan_pilot")
-
-  /// Sumber tiap asumsi. Ditampilkan apa adanya di halaman publik.
-  sumber      Json
-  dicatatOleh String   @map("dicatat_oleh")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  @@index([berlakuSejak])
-  @@map("asumsi_ekonomi")
 }

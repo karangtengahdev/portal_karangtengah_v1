@@ -1,84 +1,6 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/v1/public/ekonomi/asumsi": {
-      "get": {
-        "operationId": "EkonomiController_asumsi",
-        "summary": "Asumsi perhitungan yang berlaku",
-        "description": "Mengembalikan ketetapan perhitungan dampak ekonomi beserta sumber tiap angkanya.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "public/ekonomi"
-        ]
-      }
-    },
-    "/v1/public/ekonomi/ringkasan": {
-      "get": {
-        "operationId": "EkonomiController_ringkasan",
-        "summary": "Rekap panen pada rentang tanggal",
-        "description": "Jumlah petani, petak, luas lahan, dan produktivitas tertimbang dari catatan panen.",
-        "parameters": [
-          {
-            "name": "sampai",
-            "required": false,
-            "in": "query",
-            "description": "Tanggal akhir, format YYYY-MM-DD",
-            "schema": {}
-          },
-          {
-            "name": "dari",
-            "required": false,
-            "in": "query",
-            "description": "Tanggal awal, format YYYY-MM-DD",
-            "schema": {}
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "public/ekonomi"
-        ]
-      }
-    },
-    "/v1/public/ekonomi/dampak": {
-      "get": {
-        "operationId": "EkonomiController_dampak",
-        "summary": "Perhitungan dampak ekonomi sebelum dan sesudah",
-        "description": "Kalkulasi kerugian hama, potensi penghematan, proyeksi replikasi, dan jejak langkah perhitungannya.",
-        "parameters": [
-          {
-            "name": "sampai",
-            "required": false,
-            "in": "query",
-            "description": "Tanggal akhir, format YYYY-MM-DD",
-            "schema": {}
-          },
-          {
-            "name": "dari",
-            "required": false,
-            "in": "query",
-            "description": "Tanggal awal, format YYYY-MM-DD",
-            "schema": {}
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "public/ekonomi"
-        ]
-      }
-    },
     "/v1/auth/login": {
       "post": {
         "operationId": "AuthController_login",
@@ -1939,6 +1861,238 @@
           }
         ]
       }
+    },
+    "/v1/public/padukuhan": {
+      "get": {
+        "operationId": "PadukuhanController_list",
+        "summary": "Daftar semua padukuhan",
+        "description": "Termasuk yang belum ada data (hasData: false) -- frontend tampilkan \"Segera Hadir\" utk itu.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/padukuhan"
+        ]
+      }
+    },
+    "/v1/public/padukuhan/{name}": {
+      "get": {
+        "operationId": "PadukuhanController_getByName",
+        "summary": "Detail satu padukuhan berdasarkan nama",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public/padukuhan"
+        ]
+      }
+    },
+    "/v1/cms/padukuhan": {
+      "get": {
+        "operationId": "PadukuhanCmsController_listAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/padukuhan"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "PadukuhanCmsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePadukuhanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/padukuhan"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/padukuhan/{id}": {
+      "get": {
+        "operationId": "PadukuhanCmsController_getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/padukuhan"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "PadukuhanCmsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePadukuhanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/padukuhan"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "PadukuhanCmsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/padukuhan"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/padukuhan/{id}/gallery/upload": {
+      "post": {
+        "operationId": "PadukuhanCmsController_uploadGallery",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/padukuhan"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/v1/cms/padukuhan/gallery/{galleryId}": {
+      "delete": {
+        "operationId": "PadukuhanCmsController_removeGallery",
+        "parameters": [
+          {
+            "name": "galleryId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cms/padukuhan"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -2676,6 +2830,71 @@
         "required": [
           "nama"
         ]
+      },
+      "CreatePadukuhanDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Karangtengah",
+            "description": "Nama padukuhan"
+          },
+          "kepalaDukuh": {
+            "type": "string",
+            "example": "Sumardiyono",
+            "description": "Nama Kepala Dukuh"
+          },
+          "sambutan": {
+            "type": "string",
+            "description": "Teks sambutan Kepala Dukuh"
+          },
+          "description": {
+            "type": "string"
+          },
+          "hasData": {
+            "type": "boolean",
+            "default": false,
+            "description": "true = tampilkan penuh di publik, false = tampil \"Segera Hadir\""
+          },
+          "orderIndex": {
+            "type": "number",
+            "default": 0
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdatePadukuhanDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Karangtengah",
+            "description": "Nama padukuhan"
+          },
+          "kepalaDukuh": {
+            "type": "string",
+            "example": "Sumardiyono",
+            "description": "Nama Kepala Dukuh"
+          },
+          "sambutan": {
+            "type": "string",
+            "description": "Teks sambutan Kepala Dukuh"
+          },
+          "description": {
+            "type": "string"
+          },
+          "hasData": {
+            "type": "boolean",
+            "default": false,
+            "description": "true = tampilkan penuh di publik, false = tampil \"Segera Hadir\""
+          },
+          "orderIndex": {
+            "type": "number",
+            "default": 0
+          }
+        }
       }
     }
   }

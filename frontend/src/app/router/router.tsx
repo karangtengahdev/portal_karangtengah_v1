@@ -19,6 +19,7 @@ import { AdminUmkmPage } from '../../features/portal-admin/umkm/pages/AdminUmkmP
 import { AdminSchedulePage } from '../../features/nawasena/schedule/pages/AdminSchedulePage';
 import { AdminHarvestPage } from '../../features/nawasena/harvest/pages/AdminHarvestPage';
 import { AdminVillagePage } from '../../features/portal-admin/village/pages/AdminVillagePage';
+import { AdminPadukuhanPage } from '../../features/portal-admin/padukuhan/pages/AdminPadukuhanPage';
 import { BeritaDetailPage } from '../../features/portal/berita/pages/BeritaDetailPage';
 import { AdminPlantingSchedulePage } from '../../features/nawasena/planting-schedule/pages/AdminPlantingSchedulePage';
 import { JadwalTanamPage } from '../../features/portal/pertanian/pages/JadwalTanamPage';
@@ -57,6 +58,7 @@ export const router = createBrowserRouter([
           { path: 'berita', element: <AdminBeritaPage /> },
           { path: 'umkm', element: <AdminUmkmPage /> },
           { path: 'village', element: <AdminVillagePage /> },
+          { path: 'padukuhan', element: <AdminPadukuhanPage /> },
         ],
       },
     ],

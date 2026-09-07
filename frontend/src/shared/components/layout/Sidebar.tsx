@@ -22,14 +22,12 @@ interface NavItemConfig {
   badge?: number;
 }
 
-// Dua set menu TERPISAH TOTAL -- Portal (pemuda: konten publik) dan
-// Nawasena (tim teknologi: data pertanian/IoT). Yang tampil dipilih
-// berdasarkan role akun yang login, lihat getNavForRole() di bawah.
 const PORTAL_NAV: NavItemConfig[] = [
   { label: 'Dashboard', icon: IconLayoutDashboard, path: '/portal-admin' },
   { label: 'Berita', icon: IconNews, path: '/portal-admin/berita' },
   { label: 'UMKM', icon: IconBuildingStore, path: '/portal-admin/umkm' },
   { label: 'Profil Desa', icon: IconMapPin, path: '/portal-admin/village' },
+  { label: 'Padukuhan', icon: IconMapPin, path: '/portal-admin/padukuhan' },
 ];
 
 const NAWASENA_NAV: NavItemConfig[] = [
@@ -41,7 +39,6 @@ const NAWASENA_NAV: NavItemConfig[] = [
 
 const getNavForRole = (role: string | null): NavItemConfig[] => {
   if (role === 'portal') return PORTAL_NAV;
-  // 'nawasena' dan superadmin ('admin') pakai menu Nawasena sbg default
   return NAWASENA_NAV;
 };
 
@@ -50,15 +47,13 @@ const getBrandLabel = (role: string | null): string => {
   return 'NAWASENA';
 };
 
-// ── Desktop nav item ──────────────────────────────────────────────
 const DesktopNavItem = ({ label, icon: Icon, path, badge }: NavItemConfig) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const active =
-    path.endsWith('-admin')
-      ? location.pathname === path
-      : location.pathname.startsWith(path);
+  const active = path.endsWith('-admin')
+    ? location.pathname === path
+    : location.pathname.startsWith(path);
 
   return (
     <button
@@ -85,7 +80,6 @@ const DesktopNavItem = ({ label, icon: Icon, path, badge }: NavItemConfig) => {
   );
 };
 
-// ── Mobile bottom nav item ────────────────────────────────────────
 const MobileNavItem = ({ label, icon: Icon, path }: NavItemConfig) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -110,7 +104,6 @@ const MobileNavItem = ({ label, icon: Icon, path }: NavItemConfig) => {
   );
 };
 
-// ── Main export ───────────────────────────────────────────────────
 export const Sidebar = () => {
   const navigate = useNavigate();
   const { logout, role } = useAuth();
@@ -147,7 +140,6 @@ export const Sidebar = () => {
           </nav>
         </div>
 
-        {/* Footer user */}
         <div className="mt-auto border-t border-white/10 px-2.5 py-3">
           <div className="flex cursor-default items-center gap-2.5 rounded-[7px] px-2.5 py-1.5 hover:bg-white/6">
             <div className="grid h-7 w-7 flex-shrink-0 place-items-center rounded-full bg-[rgba(114,184,65,0.22)] text-[11px] font-semibold text-[#72b841]">
@@ -169,7 +161,7 @@ export const Sidebar = () => {
         </div>
       </aside>
 
-      {/* ============ TABLET — horizontal scrollable nav ============ */}
+      {/* ============ TABLET ============ */}
       <nav className="hidden overflow-x-auto border-b border-neutral-200 bg-white px-4 py-2 md:flex lg:hidden">
         {navItems.map(({ label, icon: Icon, path }) => {
           const location = window.location.pathname;
@@ -213,7 +205,6 @@ export const Sidebar = () => {
         <div className="pb-safe" />
       </nav>
 
-      {/* ============ BOTTOM SHEET "Akun" (profil + logout) ============ */}
       {sheetOpen && (
         <>
           <div

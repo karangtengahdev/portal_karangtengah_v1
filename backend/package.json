@@ -18,6 +18,7 @@
     "seed:news": "ts-node prisma/seed-news.ts",
     "seed:village": "ts-node prisma/seed-village.ts",
     "seed:harvest-real": "ts-node prisma/seed-harvest-real.ts",
+    "seed:padukuhan": "ts-node prisma/seed-padukuhan.ts",
     "seed:user": "ts-node prisma/seed-user.ts",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "test": "jest",

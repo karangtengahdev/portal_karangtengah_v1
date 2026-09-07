@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useEditor } from '@tiptap/react';
 import { RichTextEditor, Link } from '@mantine/tiptap';
 import StarterKit from '@tiptap/starter-kit';
@@ -14,33 +14,48 @@ type BeritaRichEditorProps = {
   onChange: (html: string) => void;
 };
 
-// Editor isi berita -- pakai @mantine/tiptap (paket resmi Mantine, jadi
-// tampilannya otomatis nyambung tanpa perlu styling ulang). Tombol
-// standar (tebal, miring, heading, list, link) bawaan library; tombol
-// SISIP GAMBAR itu custom -- buka file picker, upload ke backend
-// (endpoint upload-image), lalu sisipkan URL hasilnya di posisi kursor.
 export const BeritaRichEditor = ({ value, onChange }: BeritaRichEditorProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const editor = useEditor({
-    extensions: [
+  // PERBAIKAN UTAMA: extensions dibungkus useMemo (deps kosong) supaya
+  // array-nya PUNYA IDENTITAS YANG SAMA di setiap render. Sebelumnya
+  // ini array baru dibuat tiap render -- Tiptap membaca itu sbg
+  // "konfigurasi ganti", lalu diam-diam BIKIN EDITOR BARU dari nol
+  // di tengah sesi. Itu penyebab asli teks yang baru diketik hilang/
+  // tidak nempel ke form -- bukan soal "belum update sekali render".
+  const extensions = useMemo(
+    () => [
       StarterKit,
       Underline,
       Link.configure({ openOnClick: false }),
       TiptapImage.configure({ inline: false }),
     ],
-    content: value,
-    onUpdate: ({ editor }) => onChange(editor.getHTML()),
-  });
+    [],
+  );
+
+  // Deps kosong [] di argumen ke-2 useEditor -- pastikan editor DIBUAT
+  // SEKALI SAJA seumur hidup komponen ini, tidak peduli apa pun yang
+  // berubah di parent. Ini pola resmi yang direkomendasikan Tiptap
+  // utk kasus dimana konten perlu disinkron dari luar (lihat useEffect
+  // di bawah), bukan lewat prop `content` yang cuma dibaca sekali.
+  const editor = useEditor(
+    {
+      extensions,
+      content: value,
+      onUpdate: ({ editor }) => onChange(editor.getHTML()),
+    },
+    [],
+  );
 
   // Sinkronkan isi editor kalau `value` berubah dari LUAR (mis. modal
-  // dibuka ulang utk edit artikel LAIN) -- tanpa ini, editor tidak ikut
-  // ter-reset dan masih menampilkan isi artikel sebelumnya.
+  // dibuka utk edit artikel lain, atau load data awal). Aman dari
+  // bentrok dgn ketikan user sendiri: saat user ngetik, onUpdate sudah
+  // duluan bikin editor.getHTML() SAMA PERSIS dgn value baru, jadi
+  // pengecekan di bawah otomatis skip (tidak reset kursor/ketikan).
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
       editor.commands.setContent(value || '');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, editor]);
 
   const handlePickImage = () => fileInputRef.current?.click();

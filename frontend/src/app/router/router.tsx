@@ -14,6 +14,7 @@ import { KontakPage } from '../../features/portal/kontak/pages/KontakPage';
 import { NawasenaPage } from '../../features/portal/nawasena/pages/NawasenaPage';
 import { PertanianPage } from '../../features/portal/pertanian/pages/PertanianPage';
 import { UmkmPage } from '../../features/portal/umkm/pages/UmkmPage';
+import { UmkmDetailPage } from '../../features/portal/umkm/pages/UmkmDetailPage';
 import { DashboardLayout } from '../../shared/components/layout/DashboardLayout';
 import { AdminUmkmPage } from '../../features/portal-admin/umkm/pages/AdminUmkmPage';
 import { AdminSchedulePage } from '../../features/nawasena/schedule/pages/AdminSchedulePage';
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
       { path: 'berita', element: <PortalBeritaPage /> },
       { path: 'pertanian', element: <PertanianPage /> },
       { path: 'umkm', element: <UmkmPage /> },
+      { path: 'umkm/:slug', element: <UmkmDetailPage /> },
       { path: 'infografis', element: <InfografisPage /> },
       { path: 'nawasena', element: <NawasenaPage /> },
       { path: 'kontak', element: <KontakPage /> },

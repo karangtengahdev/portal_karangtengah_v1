@@ -3,7 +3,7 @@ import { IconArrowLeft, IconCalendarEvent, IconEye, IconUser } from '@tabler/ico
 
 import { usePublicBeritaDetail } from '../hooks/useBerita';
 import { formatBeritaDate, formatViews } from '../utils/formatBerita';
-import { ShareButtons } from '../components/ShareButtons';
+import { ShareButtons } from '../../../../shared/components/ShareButtons';
 
 const PLACEHOLDER_IMAGE = 'https://placehold.co/1200x600/e9f1e2/72b841?text=Desa+Karangtengah';
 

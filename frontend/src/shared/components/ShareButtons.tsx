@@ -12,9 +12,6 @@ type ShareButtonsProps = {
   url: string;
 };
 
-// Tombol share sederhana -- WhatsApp jadi prioritas utama (paling
-// relevan utk konteks warga desa), Facebook & Twitter/X sbg pelengkap,
-// dan "Salin Tautan" sbg fallback yang selalu berfungsi di mana pun.
 export const ShareButtons = ({ title, url }: ShareButtonsProps) => {
   const [copied, setCopied] = useState(false);
 
@@ -28,7 +25,7 @@ export const ShareButtons = ({ title, url }: ShareButtonsProps) => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard API bisa gagal (mis. browser lama/http tanpa https) --
+      // Clipboard API bisa gagal (browser lama/http tanpa https) --
       // diamkan saja, tombol lain (WA/FB/Twitter) tetap berfungsi.
     }
   };
@@ -80,9 +77,7 @@ export const ShareButtons = ({ title, url }: ShareButtonsProps) => {
         {copied ? <IconCheck size={19} stroke={2} /> : <IconLink size={19} stroke={1.8} />}
       </button>
 
-      {copied && (
-        <span className="text-xs font-semibold text-[#4f842f]">Tautan disalin!</span>
-      )}
+      {copied && <span className="text-xs font-semibold text-[#4f842f]">Tautan disalin!</span>}
     </div>
   );
 };

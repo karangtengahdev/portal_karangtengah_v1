@@ -200,8 +200,8 @@ export const UmkmPage = () => {
                   className="group overflow-hidden rounded-[12px] border border-[#EFEFEF] bg-white shadow-[0_8px_24px_rgba(16,23,8,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_38px_rgba(16,23,8,0.14)] flex flex-col"
                   key={item.id}
                 >
-                  {/* Gambar cover */}
-                  <div className="relative aspect-[4/3] overflow-hidden bg-[#F8F9FA]">
+                  {/* Gambar cover -- SEKARANG juga link ke detail, bukan cuma tombol di bawah */}
+                  <Link to={`/umkm/${item.slug}`} className="relative aspect-[4/3] overflow-hidden bg-[#F8F9FA] block">
                     {item.coverUrl ? (
                       <img
                         alt={item.name}
@@ -216,7 +216,7 @@ export const UmkmPage = () => {
                     <div className="absolute left-2 top-2 rounded-full bg-[#0F6B35] px-2.5 py-0.5 text-[10px] font-bold text-white shadow-[0_8px_18px_rgba(16,23,8,0.18)]">
                       Tersedia
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Konten card */}
                   <div className="p-3 sm:p-5 flex flex-col flex-1">
@@ -234,11 +234,13 @@ export const UmkmPage = () => {
                       <p className="text-xs sm:text-sm font-extrabold text-[#0F6B35] truncate">
                         {item.contactPhone || 'Hubungi UMKM'}
                       </p>
+                      {/* PERBAIKAN: dulu langsung ke WhatsApp (target="_blank"),
+                          sekarang ke halaman detail internal -- WhatsApp
+                          tetap ada sbg tombol CTA DI DALAM halaman detail. */}
                       <Link
-                        aria-label={`Tanyakan ${item.name}`}
+                        aria-label={`Lihat detail ${item.name}`}
                         className="inline-flex h-8 sm:h-10 items-center justify-center gap-1 rounded-full border border-[#0F6B35]/18 bg-[#0F6B35]/8 px-3 sm:px-4 text-xs sm:text-sm font-semibold text-[#0F6B35] transition hover:bg-[#0F6B35] hover:text-white shrink-0"
-                        to={`https://wa.me/${item.contactPhone?.replace(/[^0-9]/g, '')}`}
-                        target="_blank"
+                        to={`/umkm/${item.slug}`}
                       >
                         Detail
                         <IconArrowRight size={14} />

@@ -20,13 +20,14 @@ import { UmkmModule } from './modules/public-content/umkm/umkm.module';
 import { VillageModule } from './modules/public-content/village/village.module';
 import { PlantingScheduleModule } from './modules/planting-schedule/planting-schedule.module';
 import { PadukuhanModule } from './modules/padukuhan/padukuhan.module';
-
+import { EkonomiModule } from './modules/ekonomi/ekonomi.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 @Module({
   imports: [
+    EkonomiModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],

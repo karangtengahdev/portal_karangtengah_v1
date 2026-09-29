@@ -49,10 +49,10 @@ export const PortalFooter = ({
   links = defaultLinks,
   services = defaultServices,
   heading = 'Butuh informasi atau layanan desa?',
-  subheading = 'Hubungi Karang Tengah',
+  subheading = 'Hubungi Karangtngah',
   ctaLabel = 'Hubungi Desa',
   ctaTo = '/kontak',
-  address = 'Kantor Desa Karang Tengah, Imogiri, Bantul',
+  address = 'Kantor Desa Karangtengah, Imogiri, Bantul',
   phone = '0812-0000-0000',
   backgroundImage = villageSawahImage,
   wordmark = 'KARANGTENGAH',
@@ -103,10 +103,10 @@ export const PortalFooter = ({
                 </span>
                 <span>
                   <span className="block text-xl font-extrabold tracking-[0.2px]">
-                    Karang Tengah
+                    Karangtengah
                   </span>
                   <span className="block text-xs font-semibold uppercase tracking-[0.16em] text-[#b8ee70]">
-                    Portal Desa
+                    Portal Kalurahan/Padukuhan
                   </span>
                 </span>
               </Link>

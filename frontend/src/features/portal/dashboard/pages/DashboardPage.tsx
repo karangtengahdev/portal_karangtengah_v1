@@ -8,7 +8,6 @@ import {
   IconHomeStats,
   IconLeaf,
   IconMap2,
-  IconMapPin,
   IconPhone,
   IconPlant2,
   IconShieldCheck,
@@ -241,12 +240,12 @@ export const DashboardPage = () => {
       unit: 'Ha',
       icon: IconWheat,
     },
-    {
-      title: 'Keluarga Petani',
-      value: village?.stats?.farmer_families?.toLocaleString('id-ID') ?? '-',
-      unit: 'KK',
-      icon: IconMapPin,
-    },
+    // {
+    //   title: 'Keluarga Petani',
+    //   value: village?.stats?.farmer_families?.toLocaleString('id-ID') ?? '-',
+    //   unit: 'KK',
+    //   icon: IconMapPin,
+    // },
     {
       title: 'Padukuhan',
       value: '6',
@@ -319,7 +318,7 @@ export const DashboardPage = () => {
                 <IconLeaf size={16} stroke={1.7} />
                 <span />
               </div>
-              <p>Gambaran singkat wilayah, penduduk, dan potensi Kalurahan Karangtengah.</p>
+              <p>Gambaran singkat wilayah, penduduk, dan potensi Padukuhan Karangtengah.</p>
             </div>
 
             <div className="village-stats-grid">
